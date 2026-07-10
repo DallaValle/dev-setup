@@ -1,0 +1,31 @@
+[core]
+	editor = \"C:/Program Files/notepad++/notepad++.exe\" -multiInst -nosession
+	autocrlf = false
+	eol = lf
+[user]
+	name = sergio.dallavalle@supertext.com
+	email = sergio.dallavalle@supertext.com
+[diff]
+	guitool = kdiff3
+[difftool "kdiff3"]
+	path = kdiff3.exe
+	cmd = \"kdiff3.exe\" \"$LOCAL\" \"$REMOTE\"
+[merge]
+	guitool = kdiff3
+[mergetool "kdiff3"]
+	path = kdiff3.exe
+	cmd = \"kdiff3.exe\" \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
+[pull]
+	rebase = false
+[fetch]
+	prune = false
+[rebase]
+	autoStash = false
+	autosquash = false
+	updateRefs = false
+[push]
+	autoSetupRemote = true
+[http "https://dev.azure.com"]
+	sslVersion = tlsv1.2
+[http]
+	forceIPv4 = true
