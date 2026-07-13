@@ -133,12 +133,48 @@ complete -F _cd_substring_complete cd
 
 # --- Compact git-aware prompt ---
 PROMPT_DIRTRIM=3
+# branch ↑ahead ↓behind +staged ~modified ?untracked ✗conflicts ⚑stashed
+# single git call per prompt; git.exe on /mnt/* (DrvFs) where Linux git is slow
 __git_prompt() {
-    local b
-    b=$(git symbolic-ref --short HEAD 2>/dev/null) || b=$(git rev-parse --short HEAD 2>/dev/null) || return
-    printf ' (%s)' "$b"
+    local g=git
+    case $PWD in /mnt/*) g=git.exe ;; esac
+
+    local out
+    out=$("$g" --no-optional-locks status --porcelain=v2 --branch --show-stash 2>/dev/null) || return
+
+    local branch='' oid='' ab ahead=0 behind=0 stash=0 staged=0 changed=0 untracked=0 conflicts=0 line
+    while IFS= read -r line; do
+        line=${line%$'\r'}
+        case $line in
+            '# branch.head '*) branch=${line#'# branch.head '} ;;
+            '# branch.oid '*)  oid=${line#'# branch.oid '} ;;
+            '# branch.ab '*)   ab=${line#'# branch.ab '}
+                               ahead=${ab%% *};  ahead=${ahead#+}
+                               behind=${ab##* }; behind=${behind#-} ;;
+            '# stash '*)       stash=${line#'# stash '} ;;
+            [12]' '*)          [ "${line:2:1}" != . ] && ((staged++))
+                               [ "${line:3:1}" != . ] && ((changed++)) ;;
+            'u '*)             ((conflicts++)) ;;
+            '? '*)             ((untracked++)) ;;
+        esac
+    done <<<"$out"
+
+    [ "$branch" = '(detached)' ] && branch="@${oid:0:7}"
+
+    # \001/\002 = readline's "invisible chars" markers (the \[ \] of PS1 don't
+    # survive command substitution)
+    local Y=$'\001\e[0;33m\002' G=$'\001\e[0;32m\002' R=$'\001\e[0;31m\002' C=$'\001\e[0;36m\002' X=$'\001\e[0m\002'
+    local s=" ${Y}(${branch}"
+    ((ahead))     && s+=" ${C}↑${ahead}${Y}"
+    ((behind))    && s+=" ${C}↓${behind}${Y}"
+    ((staged))    && s+=" ${G}+${staged}${Y}"
+    ((changed))   && s+=" ${R}~${changed}${Y}"
+    ((untracked)) && s+=" ${R}?${untracked}${Y}"
+    ((conflicts)) && s+=" ${R}✗${conflicts}${Y}"
+    ((stash))     && s+=" ${C}⚑${stash}${Y}"
+    printf '%s)%s' "$s" "$X"
 }
-PS1='\[\e[1;34m\]\w\[\e[0;33m\]$(__git_prompt)\[\e[0m\] \$ '
+PS1='\[\e[1;34m\]\w\[\e[0m\]$(__git_prompt)\[\e[0m\] \$ '
 # keep full info in the window title
 PS1="\[\e]0;\u@\h: \w\a\]$PS1"
 export PATH="/home/sergiodallavalle/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Users/SergioDallaValle/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/local/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Users/SergioDallaValle/bin:/mnt/c/Program Files/PowerShell/7:/mnt/c/Program Files/Microsoft SDKs/Azure/CLI2/wbin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/dotnet:/mnt/c/Program Files/GitExtensions:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/DTS/Binn:/mnt/c/Program Files/OpenSSL-Win64/bin:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/WINDOWS/System32:/mnt/c/Program Files/Sql Server Extension:/mnt/c/Program Files/Microsoft/Web Platform Installer:/mnt/c/Program Files/PyManager:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/Program Files/PowerShell/7:/mnt/c/Program Files/WezTerm:/mnt/c/Program Files/PowerShell/7:/mnt/c/Users/SergioDallaValle/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand:/mnt/c/Users/SergioDallaValle/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli:/mnt/c/Users/SergioDallaValle/AppData/Local/Programs/Microsoft VS Code:/mnt/c/Program Files/Microsoft SDKs/Azure/CLI2/wbin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/dotnet:/mnt/c/Program Files/GitExtensions:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/DTS/Binn:/mnt/c/Program Files/OpenSSL-Win64/bin:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/WINDOWS/System32:/mnt/c/Program Files/Sql Server Extension:/mnt/c/Program Files/Microsoft/Web Platform Installer:/mnt/c/Program Files/PyManager:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/Program Files/PowerShell/7:/mnt/c/Program Files/Microsoft SDKs/Azure/CLI2/wbin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/dotnet:/mnt/c/Program Files/GitExtensions:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/DTS/Binn:/mnt/c/Program Files/OpenSSL-Win64/bin:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/WINDOWS/System32:/mnt/c/Program Files/Sql Server Extension:/mnt/c/Program Files/Microsoft/Web Platform Installer:/mnt/c/Program Files/PyManager:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/Program Files/PowerShell/7:/mnt/c/Users/SergioDallaValle/AppData/Local/bun:/mnt/c/Users/SergioDallaValle/AppData/Local/bun:/mnt/c/Users/SergioDallaValle/AppData/Local/Programs/oh-my-posh/bin:/mnt/c/Users/SergioDallaValle/AppData/Roaming/Python/Scripts:/mnt/c/Users/SergioDallaValle/AppData/Local/AnthropicClaude:/mnt/c/Users/SergioDallaValle/AppData/Local/Programs/oh-my-posh/bin:/mnt/c/Users/SergioDallaValle/AppData/Roaming/Python/Scripts:/mnt/c/Users/SergioDallaValle/AppData/Local/Microsoft/WinGet/Packages/Anthropic.ClaudeCode_Microsoft.Winget.Source_8wekyb3d8bbwe:/mnt/c/Users/SergioDallaValle/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/SergioDallaValle/.dotnet/tools:/mnt/c/Program Files/Git/usr/bin/vendor_perl:/mnt/c/Program Files/Git/usr/bin/core_perl"
