@@ -11,9 +11,8 @@ BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 FILES=(
 	.bashrc
 	.profile
-	.config/nvim/init.lua
-	.config/nvim/lazy-lock.json
 	.claude/settings.json
+	.claude/CLAUDE.md
 )
 
 for rel in "${FILES[@]}"; do
