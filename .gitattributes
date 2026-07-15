@@ -1,4 +1,4 @@
 # Keep LF everywhere so checkouts are identical on WSL and macOS.
 * text=auto eol=lf
 # .wslconfig is read by Windows; keep its CRLF endings as-is.
-windows/.wslconfig text eol=crlf
+dotfiles/windows/.wslconfig text eol=crlf

@@ -1,40 +1,26 @@
 # dev-setup
 
-Sergio's config files, tracked in git and symlinked into place — editing a config
-*is* editing this repo, so `git commit` is the whole sync workflow.
+Sergio's dev machine setup: the programs to install and the config files that go with them.
+Configs are tracked in git and symlinked into place, so editing a config *is* editing this repo and `git commit` is the whole sync workflow.
 
-## Bootstrap on a new WSL/Linux machine
+## Layout
+
+| Path | What's in it |
+|---|---|
+| `programs/` | `programs.md` (the software the configs assume) plus a short wiki per program that needs manual setup, e.g. `wezterm.md` |
+| `dotfiles/home/` | configs symlinked into `$HOME` on WSL/Linux and macOS (`.bashrc`, `.profile`, `.inputrc`, `.claude/`) |
+| `dotfiles/wezterm/` | `.wezterm.lua`, one cross-platform config applied to Windows and macOS (see `programs/wezterm.md`) |
+| `dotfiles/windows/` | configs applied by hand on the Windows host (`.gitconfig`, `.wslconfig`) |
+| `scripts/` | `packages.sh` (installs programs) and `install.sh` (symlinks the dotfiles) |
+
+## Bootstrap on a new machine
 
 ```sh
 git clone <this-repo> ~/dev-setup
 cd ~/dev-setup
-./packages.sh   # installs tmux (and wezterm on macOS)
-./install.sh    # symlinks tracked files into $HOME
+./scripts/packages.sh   # install programs (see programs/programs.md)
+./scripts/install.sh    # symlink dotfiles/home into $HOME
 ```
 
-Both scripts are idempotent — re-running them is safe and just reports
-"already installed" / "already linked".
-
-## What's tracked
-
-| File | Applied by | Notes |
-|---|---|---|
-| `home/.bashrc` | `install.sh` | symlinked to `~/.bashrc` |
-| `home/.profile` | `install.sh` | symlinked to `~/.profile` |
-| `home/.claude/settings.json` | `install.sh` | symlinked to `~/.claude/settings.json` |
-| `home/.claude/CLAUDE.md` | `install.sh` | symlinked to `~/.claude/CLAUDE.md` — global Claude memory/instructions. Only these two files, never the rest of `~/.claude` (credentials, sessions, history) |
-| `windows/.gitconfig` | manual | copy to `%USERPROFILE%\.gitconfig` |
-| `windows/.wslconfig` | manual | copy to `%USERPROFILE%\.wslconfig` |
-| `windows/.wezterm.lua` | manual | copy to `%USERPROFILE%\.wezterm.lua` (Windows) or `~/.wezterm.lua` (macOS); WezTerm itself installs via `winget install wez.wezterm` on Windows or `packages.sh` (Homebrew) on macOS |
-
-The `windows/` files aren't auto-applied because `install.sh` only runs inside
-WSL and symlinking into the Windows profile needs admin `mklink` — out of
-scope for now.
-
-## What's intentionally excluded
-
-- **`.npmrc`** — contains a live Azure DevOps auth token in plaintext. Never
-  put this in git, even in a private repo. Manage it locally instead.
-- **`.ssh/`, `.aws/`** — private keys and cloud credentials.
-- Everything under `~/.claude` except `settings.json` and `CLAUDE.md` —
-  credentials, session history, cache.
+Both scripts are idempotent, re-running them is safe.
+`dotfiles/windows/` is applied manually because `install.sh` runs inside WSL and cannot write the Windows profile.

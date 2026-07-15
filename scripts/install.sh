@@ -4,8 +4,8 @@
 # unexpected on later runs, and skips files already linked correctly.
 set -euo pipefail
 
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SRC_DIR="$REPO_DIR/home"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SRC_DIR="$REPO_DIR/dotfiles/home"
 BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 
 FILES=(

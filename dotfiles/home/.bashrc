@@ -184,3 +184,6 @@ if [ -n "${WSL_DISTRO_NAME-}" ]; then
     alias git=git.exe
 fi
 
+
+# Claude Code in auto mode (no permission prompts)
+alias cc="claude --dangerously-skip-permissions"
