@@ -5,7 +5,19 @@ Software the tracked configs assume is present.
 
 | Program | Platform | Install | Config |
 |---|---|---|---|
-| tmux | WSL/Linux, macOS | `scripts/packages.sh` (apt / Homebrew) | none tracked yet |
-| WezTerm | Windows, macOS | follow [`programs/wezterm.md`](wezterm.md) (same setup on both) | `dotfiles/wezterm/.wezterm.lua` |
+| zsh + zsh-autosuggestions + zsh-syntax-highlighting | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.zshrc` |
+| tmux | WSL/Linux, macOS | `scripts/packages.sh` | none tracked yet |
+| ripgrep (`rg`) | WSL/Linux, macOS | `scripts/packages.sh` | none |
+| fd | WSL/Linux, macOS | `scripts/packages.sh` | none |
+| fzf | WSL/Linux, macOS | `scripts/packages.sh` | none |
+| jq | WSL/Linux, macOS | `scripts/packages.sh` | none |
+| lazygit | WSL/Linux, macOS | `scripts/packages.sh` | none |
+| Neovim (`nvim`) | WSL/Linux, macOS | `scripts/packages.sh` | none tracked yet |
+| WezTerm | Windows, macOS | follow [`wezterm.md`](wezterm.md) (same setup on both) | `dotfiles/wezterm/.wezterm.lua` |
 | Git | all | preinstalled / OS package manager | `dotfiles/windows/.gitconfig` |
 | Claude Code | all | see docs.claude.com | `dotfiles/home/.claude/` |
+
+`packages.sh` also sets zsh as the default login shell (`chsh`), which is what makes WezTerm open zsh: on Windows the WSL domain launches the login shell, and on macOS the native shell is already zsh.
+
+On macOS everything above is a Homebrew formula.
+On WSL/Linux most come from apt, except `fd` (installed as `fdfind`, linked to `fd`) and `lazygit`/`neovim`, which `packages.sh` pulls from their official GitHub releases into `~/.local/bin` because apt's versions are missing or too old.
