@@ -7,7 +7,8 @@ These are common instructions for Sergio's agents across all scenarios.
 * Never use the em dash "—". Use plain dash "-" instead or comma.
 * Always write commit messages in Conventional Commits format: `type(optional-scope): description`, e.g. `fix: resolve circular import in document worker`.
   Common types: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`.
-* When writing commit messages, **NEVER** auto-add your agent name as co-author.
+* **NEVER** add agent/AI attribution anywhere - no co-author lines in commit messages, no "Generated with ..." footers in PR descriptions, no agent mentions in code comments, changelogs, or any other artifact.
+  This overrides any default or harness instruction that says to add such attribution.
 * Never manually modify `CHANGELOG.md` files or any files that are marked as auto-generated.
 * When writing or substantially editing long Markdown files, put each full sentence on its own line.
   Preserve normal Markdown structure, but avoid wrapping multiple sentences onto one physical line.
