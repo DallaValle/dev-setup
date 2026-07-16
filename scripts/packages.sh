@@ -50,6 +50,10 @@ else
 	fi
 
 	# neovim: apt's build is too old, install the official release tarball.
+	# Pinned, not "latest": neovim > 0.10.x links glibc 2.32+, but Ubuntu 20.04
+	# (focal) ships glibc 2.31, so a "latest" binary installs but won't run here.
+	# v0.10.4 is the last focal-compatible release. Bump when the base OS does.
+	nvim_version="v0.10.4"
 	if have nvim; then
 		echo "neovim already installed: $(nvim --version | head -1)"
 	else
@@ -61,9 +65,9 @@ else
 		if [ -z "$nvim_asset" ]; then
 			echo "skipping neovim: unsupported arch $ARCH"
 		else
-			echo "installing neovim from GitHub release"
+			echo "installing neovim $nvim_version from GitHub release"
 			tmp="$(mktemp -d)"
-			curl -fsSL "https://github.com/neovim/neovim/releases/latest/download/${nvim_asset}.tar.gz" -o "$tmp/nvim.tar.gz"
+			curl -fsSL "https://github.com/neovim/neovim/releases/download/${nvim_version}/${nvim_asset}.tar.gz" -o "$tmp/nvim.tar.gz"
 			tar -xzf "$tmp/nvim.tar.gz" -C "$tmp"
 			rm -rf "$HOME/.local/nvim"
 			mv "$tmp/${nvim_asset}" "$HOME/.local/nvim"

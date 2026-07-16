@@ -12,7 +12,7 @@ Software the tracked configs assume is present.
 | fzf | WSL/Linux, macOS | `scripts/packages.sh` | none |
 | jq | WSL/Linux, macOS | `scripts/packages.sh` | none |
 | lazygit | WSL/Linux, macOS | `scripts/packages.sh` | none |
-| Neovim (`nvim`) | WSL/Linux, macOS | `scripts/packages.sh` | none tracked yet |
+| Neovim (`nvim`) | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/nvim/` (lazy.nvim, plugins pinned in `lazy-lock.json`) |
 | WezTerm | Windows, macOS | follow [`wezterm.md`](wezterm.md) (same setup on both) | `dotfiles/wezterm/.wezterm.lua` |
 | Git | all | preinstalled / OS package manager | `dotfiles/windows/.gitconfig` |
 | Claude Code | all | see docs.claude.com | `dotfiles/home/.claude/` |
@@ -21,3 +21,5 @@ Software the tracked configs assume is present.
 
 On macOS everything above is a Homebrew formula.
 On WSL/Linux most come from apt, except `fd` (installed as `fdfind`, linked to `fd`) and `lazygit`/`neovim`, which `packages.sh` pulls from their official GitHub releases into `~/.local/bin` because apt's versions are missing or too old.
+Neovim is pinned to `v0.10.4`, the last release that runs on Ubuntu 20.04 (focal, glibc 2.31); newer builds need glibc 2.32+.
+Neovim's own plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim), which bootstraps itself on first launch and installs everything from `dotfiles/home/.config/nvim/lazy-lock.json`.
