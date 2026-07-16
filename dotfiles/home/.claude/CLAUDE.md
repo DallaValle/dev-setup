@@ -11,7 +11,6 @@ These are common instructions for Sergio's agents across all scenarios.
 * Never manually modify `CHANGELOG.md` files or any files that are marked as auto-generated.
 * When writing or substantially editing long Markdown files, put each full sentence on its own line.
   Preserve normal Markdown structure, but avoid wrapping multiple sentences onto one physical line.
-* When making technical decisions, do not give much weight to development cost.
   Instead, prefer quality, simplicity, robustness, scalability, and long-term maintainability.
 * When doing bug fixes, always start with reproducing the bug in an E2E setting as closely aligned with how an end user would experience it.
   This makes sure you find the real problem so your fix will actually solve it.
