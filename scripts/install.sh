@@ -10,7 +10,11 @@ BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 
 FILES=(
 	.bashrc
+	.zshrc
 	.profile
+	.zprofile
+	.inputrc
+	.shell_aliases
 	.claude/settings.json
 	.claude/CLAUDE.md
 )

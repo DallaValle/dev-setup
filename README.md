@@ -8,7 +8,7 @@ Configs are tracked in git and symlinked into place, so editing a config *is* ed
 | Path | What's in it |
 |---|---|
 | `programs/` | `programs.md` (the software the configs assume) plus a short wiki per program that needs manual setup, e.g. `wezterm.md` |
-| `dotfiles/home/` | configs symlinked into `$HOME` on WSL/Linux and macOS (`.bashrc`, `.profile`, `.inputrc`, `.claude/`) |
+| `dotfiles/home/` | configs symlinked into `$HOME` on WSL/Linux and macOS (`.bashrc`, `.zshrc`, `.profile`, `.zprofile`, `.inputrc`, `.shell_aliases`, `.claude/`). `.bashrc` covers WSL/Linux, `.zshrc` covers macOS, and both source `.shell_aliases` for shell-agnostic aliases (e.g. `cc`) |
 | `dotfiles/wezterm/` | `.wezterm.lua`, one cross-platform config applied to Windows and macOS (see `programs/wezterm.md`) |
 | `dotfiles/windows/` | configs applied by hand on the Windows host (`.gitconfig`, `.wslconfig`) |
 | `scripts/` | `packages.sh` (installs programs) and `install.sh` (symlinks the dotfiles) |
