@@ -1,6 +1,0 @@
-# Shell-agnostic aliases, sourced by both .bashrc (WSL/Linux) and .zshrc (macOS).
-# Keep everything here portable across bash and zsh so the same commands work
-# on every platform.
-
-# Claude Code in auto mode (no permission prompts)
-alias cc="claude --dangerously-skip-permissions"

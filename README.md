@@ -16,7 +16,7 @@ Both machines run the same terminal and shell: **WezTerm** with **zsh**. Same ap
 | Path | What's in it |
 |---|---|
 | `programs/` | `programs.md` (the software the configs assume) plus a short wiki per program that needs manual setup, e.g. `wezterm.md` |
-| `dotfiles/home/` | configs symlinked into `$HOME` on WSL/Linux and macOS (`.bashrc`, `.zshrc`, `.profile`, `.zprofile`, `.inputrc`, `.shell_aliases`, `.claude/`). `.bashrc` covers WSL/Linux, `.zshrc` covers macOS, and both source `.shell_aliases` for shell-agnostic aliases (e.g. `cc`) |
+| `dotfiles/home/` | configs symlinked into `$HOME` on WSL/Linux and macOS (`.zshrc`, `.bashrc`, `.profile`, `.zprofile`, `.inputrc`, `.config/nvim`, `.claude/`). `.zshrc` is the one cross-platform shell config, aliases included; `.bashrc` is only a fallback for bash sessions |
 | `dotfiles/wezterm/` | `.wezterm.lua`, one cross-platform config applied to Windows and macOS (see `programs/wezterm.md`) |
 | `dotfiles/windows/` | configs applied by hand on the Windows host (`.gitconfig`, `.wslconfig`) |
 | `scripts/` | `packages.sh` (installs programs) and `install.sh` (symlinks the dotfiles) |
