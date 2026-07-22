@@ -15,6 +15,7 @@ FILES=(
 	.zprofile
 	.inputrc
 	.config/nvim
+	.config/herdr/config.toml
 	.claude/settings.json
 	.claude/CLAUDE.md
 )

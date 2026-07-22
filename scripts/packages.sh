@@ -12,7 +12,7 @@ LOCAL_BIN="$HOME/.local/bin"
 have() { command -v "$1" >/dev/null 2>&1; }
 
 if [ "$OS" = "Darwin" ]; then
-	for pkg in tmux ripgrep fd fzf jq lazygit neovim zsh zsh-autosuggestions zsh-syntax-highlighting; do
+	for pkg in tmux ripgrep fd fzf jq lazygit neovim herdr zsh zsh-autosuggestions zsh-syntax-highlighting; do
 		if brew list --versions "$pkg" >/dev/null 2>&1; then
 			echo "$pkg already installed"
 		else
@@ -96,6 +96,16 @@ else
 			install -m 755 "$tmp/lazygit" "$LOCAL_BIN/lazygit"
 			rm -rf "$tmp"
 		fi
+	fi
+
+	# herdr: terminal workspace manager for AI coding agents, a single binary.
+	# Not pinned like neovim: herdr updates itself with `herdr update`, so we only
+	# bootstrap it via the official installer, which drops the binary into ~/.local/bin.
+	if have herdr; then
+		echo "herdr already installed: $(herdr --version)"
+	else
+		echo "installing herdr from herdr.dev/install.sh"
+		curl -fsSL https://herdr.dev/install.sh | sh
 	fi
 fi
 
