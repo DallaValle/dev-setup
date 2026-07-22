@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Installs the CLI tools the tracked configs assume are present.
 # Safe to re-run: each step skips itself if already satisfied.
-# macOS: everything via Homebrew. WSL/Linux: apt where reliable, official
-# GitHub release binaries for neovim and lazygit (apt's are missing or stale).
+# macOS: Homebrew. WSL/Linux: apt where reliable, official GitHub release
+# binaries for neovim and lazygit (apt's are missing or stale).
+# herdr is installed the same way on both, via its official installer.
 set -euo pipefail
 
 OS="$(uname -s)"
@@ -12,7 +13,7 @@ LOCAL_BIN="$HOME/.local/bin"
 have() { command -v "$1" >/dev/null 2>&1; }
 
 if [ "$OS" = "Darwin" ]; then
-	for pkg in tmux ripgrep fd fzf jq lazygit neovim herdr zsh zsh-autosuggestions zsh-syntax-highlighting; do
+	for pkg in tmux ripgrep fd fzf jq lazygit neovim zsh zsh-autosuggestions zsh-syntax-highlighting; do
 		if brew list --versions "$pkg" >/dev/null 2>&1; then
 			echo "$pkg already installed"
 		else
@@ -97,16 +98,17 @@ else
 			rm -rf "$tmp"
 		fi
 	fi
+fi
 
-	# herdr: terminal workspace manager for AI coding agents, a single binary.
-	# Not pinned like neovim: herdr updates itself with `herdr update`, so we only
-	# bootstrap it via the official installer, which drops the binary into ~/.local/bin.
-	if have herdr; then
-		echo "herdr already installed: $(herdr --version)"
-	else
-		echo "installing herdr from herdr.dev/install.sh"
-		curl -fsSL https://herdr.dev/install.sh | sh
-	fi
+# herdr: terminal workspace manager for AI coding agents, a single binary.
+# Same installer on macOS and WSL/Linux: the brew formula builds it (and llvm/rust)
+# from source, so we use the official installer, which drops a prebuilt binary into
+# ~/.local/bin. Not pinned like neovim: herdr updates itself with `herdr update`.
+if have herdr; then
+	echo "herdr already installed: $(herdr --version)"
+else
+	echo "installing herdr from herdr.dev/install.sh"
+	curl -fsSL https://herdr.dev/install.sh | sh
 fi
 
 # Make zsh the default login shell. WezTerm opens the login shell (the WSL
