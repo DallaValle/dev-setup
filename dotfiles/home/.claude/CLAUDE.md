@@ -5,6 +5,8 @@ These are common instructions for Sergio's agents across all scenarios.
 ## General Guidelines
 
 * Never use the em dash "—". Use plain dash "-" instead or comma.
+* Code comments must be synthetic and meaningful: short, high-signal "smart" comments that explain the *why*, not the obvious *what*.
+  Keep them easy to scan (one clear line where possible) and avoid verbose, redundant, or boilerplate comments.
 * Always write commit messages in Conventional Commits format: `type(optional-scope): description`, e.g. `fix: resolve circular import in document worker`.
   Common types: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`.
 * **NEVER** add agent/AI attribution anywhere - no co-author lines in commit messages, no "Generated with ..." footers in PR descriptions, no agent mentions in code comments, changelogs, or any other artifact.
