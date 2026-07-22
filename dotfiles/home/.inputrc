@@ -1,2 +1,10 @@
+# Case-insensitive filename completion (matches zsh matcher-list behavior)
+set completion-ignore-case on
+# Treat - and _ as interchangeable while completing
+set completion-map-case on
+# On first Tab, show the filtered matches instead of just beeping
+set show-all-if-ambiguous on
+set menu-complete-display-prefix on
+
 TAB: menu-complete
 "\e[Z": menu-complete-backward
