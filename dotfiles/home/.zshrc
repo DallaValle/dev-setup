@@ -85,8 +85,9 @@ __git_prompt() {
 	print -n "${s})%f"
 }
 
-# %3~ = last 3 path components (matches PROMPT_DIRTRIM=3)
-PROMPT='%B%F{blue}%3~%f%b$(__git_prompt) $ '
+# %1~ = current folder only; input goes on its own line below
+PROMPT='%B%F{blue}%1~%f%b$(__git_prompt)
+$ '
 
 # keep full info in the window title
 _set_title() { print -Pn "\e]0;%n@%m: %~\a" }
