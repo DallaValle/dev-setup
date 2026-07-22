@@ -1,0 +1,14 @@
+# herdr configuration
+# Keybindings reference: https://herdr.dev/docs/configuration/#keybindings
+# Validate after editing with: herdr config check
+
+[keys]
+# Move pane focus with prefix + arrow key, in the direction of the arrow.
+# The vim-style prefix + h/j/k/l defaults are kept as secondary bindings.
+focus_pane_left = ["prefix+left", "prefix+h"]
+focus_pane_right = ["prefix+right", "prefix+l"]
+focus_pane_up = ["prefix+up", "prefix+k"]
+focus_pane_down = ["prefix+down", "prefix+j"]
+
+[ui]
+agent_panel_sort = "spaces"
