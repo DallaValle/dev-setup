@@ -110,3 +110,9 @@ for p in \
 	/usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh; do
 	[[ -r $p ]] && { source "$p"; break; }
 done
+
+# >>> grok installer >>>
+export PATH="$HOME/.grok/bin:$PATH"
+fpath=(~/.grok/completions/zsh $fpath)
+autoload -Uz compinit && compinit -C
+# <<< grok installer <<<
