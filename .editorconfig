@@ -1,0 +1,25 @@
+# Editor-level twin of .gitattributes: keep files identical on WSL and macOS
+# by having editors write LF at save time, not just git at commit time.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Shell scripts are tab-indented in this repo.
+[*.sh]
+indent_style = tab
+
+[*.json]
+indent_style = space
+indent_size = 2
+
+# Trailing spaces are a hard line break in Markdown, so never trim them.
+[*.md]
+trim_trailing_whitespace = false
+
+# .wslconfig is read by Windows; keep CRLF to match .gitattributes.
+[.wslconfig]
+end_of_line = crlf

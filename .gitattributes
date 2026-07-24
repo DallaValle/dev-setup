@@ -2,3 +2,14 @@
 * text=auto eol=lf
 # .wslconfig is read by Windows; keep its CRLF endings as-is.
 dotfiles/windows/.wslconfig text eol=crlf
+
+# Never touch line endings on binary assets (fonts, images) added later.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
