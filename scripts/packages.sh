@@ -123,6 +123,36 @@ else
 	curl -fsSL https://x.ai/cli/install.sh | bash
 fi
 
+# VS Code: a GUI app, so it is installed per host, not per shell.
+# On macOS the cask provides both the app and the `code` CLI. On WSL the editor
+# lives on the Windows host and `code` reaches the distro through PATH interop
+# (the Remote-WSL extension), so installing a Linux build inside WSL is wrong.
+vscode_app="/Applications/Visual Studio Code.app"
+vscode_cli="$vscode_app/Contents/Resources/app/bin/code"
+if [ "$OS" = "Darwin" ]; then
+	if [ -d "$vscode_app" ]; then
+		echo "VS Code already installed"
+	else
+		echo "installing VS Code via Homebrew cask"
+		brew install --cask visual-studio-code
+	fi
+
+	# Link the CLI ourselves instead of trusting the cask's binary symlink: the app
+	# may have been drag-installed outside brew, which leaves no `code` on PATH.
+	# ~/.local/bin is already first on PATH in .zshrc, so this works either way.
+	if [ -x "$vscode_cli" ]; then
+		mkdir -p "$LOCAL_BIN"
+		ln -sf "$vscode_cli" "$LOCAL_BIN/code"
+		echo "linked code -> $vscode_cli"
+	else
+		echo "skipping code CLI: $vscode_cli not found"
+	fi
+elif have code; then
+	echo "VS Code reachable as 'code' (Windows host via WSL interop)"
+else
+	echo "VS Code not on PATH: install it on the Windows host, see programs/vscode.md"
+fi
+
 # Make zsh the default login shell. WezTerm opens the login shell (the WSL
 # domain on Windows, the native shell on macOS), so this is what makes both
 # machines start in zsh. Safe to re-run: skips when zsh is already default.

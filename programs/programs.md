@@ -14,6 +14,7 @@ Software the tracked configs assume is present.
 | lazygit | WSL/Linux, macOS | `scripts/packages.sh` | none |
 | Neovim (`nvim`) | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/nvim/` (lazy.nvim, plugins pinned in `lazy-lock.json`) |
 | WezTerm | Windows, macOS | follow [`wezterm.md`](wezterm.md) (same setup on both) | `dotfiles/wezterm/.wezterm.lua` |
+| VS Code (`code`) | Windows, macOS | macOS: `scripts/packages.sh`; Windows: follow [`vscode.md`](vscode.md) | none tracked, VS Code Settings Sync handles it |
 | Git | all | preinstalled / OS package manager | `dotfiles/windows/.gitconfig` |
 | Claude Code | all | see docs.claude.com | `dotfiles/home/.claude/` |
 | herdr | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/herdr/config.toml` |
@@ -30,3 +31,7 @@ On both macOS and WSL/Linux `packages.sh` runs herdr's official installer (`curl
 It is deliberately not the Homebrew formula: brew builds herdr and its heavy dependencies (llvm, rust, zig) from source, while the installer fetches a ready binary in seconds.
 It is not version-pinned like neovim: herdr updates itself in place with `herdr update` (and switches release channels with `herdr channel set stable|preview`), so `packages.sh` only bootstraps it and then stays out of the way.
 Its config is tracked at `dotfiles/home/.config/herdr/config.toml` (symlinked to `~/.config/herdr/config.toml` by `install.sh`); currently it just rebinds pane focus to `prefix + arrow`. Validate edits with `herdr config check`.
+
+VS Code is a GUI app, so it is installed once per host and never inside WSL; see [`vscode.md`](vscode.md) for the details.
+On macOS `packages.sh` installs the Homebrew cask (skipping it when the app is already there, e.g. drag-installed) and links the CLI bundled in the app to `~/.local/bin/code`, which is what makes `code .` work in zsh.
+On Windows it is a `winget` install on the host, and `code .` works inside WSL through PATH interop, so there `packages.sh` only checks that it is reachable.
