@@ -17,17 +17,21 @@ FILES=(
 	.config/nvim
 	.config/herdr/config.toml
 	.claude/settings.json
-	.claude/CLAUDE.md
+	AGENTS.md
 )
 
 # Extra links onto a file already tracked above, so one canonical file serves
 # several tools. Format: "<dest under $HOME> <source under dotfiles/home>".
-# grok reads global rules from ~/.grok/, accepting only Agents.md, Claude.md,
-# AGENT.md or AGENTS.md, so linking AGENTS.md at the Claude instructions gives
-# both agents one rule set. The spelling matches that list exactly because the
-# WSL filesystem is case-sensitive, where CLAUDE.md would go unread.
+# AGENTS.md is the rule set every agent reads; each entry here is only the name
+# that agent insists on:
+#   - Claude Code reads CLAUDE.md and never AGENTS.md, and ~/.claude/CLAUDE.md
+#     is its one user-level location.
+#   - grok looks only in ~/.grok/ for global rules, matching Agents.md,
+#     Claude.md, AGENT.md or AGENTS.md. The spelling matters on WSL, whose
+#     filesystem is case-sensitive, so an all-caps CLAUDE.md would go unread.
 ALIASES=(
-	".grok/AGENTS.md .claude/CLAUDE.md"
+	".claude/CLAUDE.md AGENTS.md"
+	".grok/AGENTS.md AGENTS.md"
 )
 
 # Link $2 (under dotfiles/home) to $1 (under $HOME), reporting it as $1.
