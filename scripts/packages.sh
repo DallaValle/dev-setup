@@ -111,6 +111,18 @@ else
 	curl -fsSL https://herdr.dev/install.sh | sh
 fi
 
+# grok: xAI's agentic coding CLI, installed via its official installer into
+# ~/.grok/bin (it also symlinks into ~/.local/bin). The installer appends its own
+# PATH/completions block to .zshrc, which is a symlink into this repo, so it edits
+# the tracked .zshrc directly. That block is already committed, and the installer
+# replaces it in place rather than duplicating, so re-running is safe.
+if have grok; then
+	echo "grok already installed: $(grok --version)"
+else
+	echo "installing grok from x.ai/cli/install.sh"
+	curl -fsSL https://x.ai/cli/install.sh | bash
+fi
+
 # Make zsh the default login shell. WezTerm opens the login shell (the WSL
 # domain on Windows, the native shell on macOS), so this is what makes both
 # machines start in zsh. Safe to re-run: skips when zsh is already default.
