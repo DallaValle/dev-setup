@@ -31,6 +31,9 @@ Run `packages.sh` first so the programs exist, then `install.sh` to link their c
 ## Gotchas
 
 - Editing a symlinked config edits the repo directly. To sync a change to other machines, commit and push it.
+- This file is the project rule set, and `CLAUDE.md` is a symlink to it, because Claude Code reads `CLAUDE.md` and never `AGENTS.md`.
+  Editing either edits this one file, so never split them or write instructions into `CLAUDE.md` expecting them to stay separate.
+  The same trick is applied globally: `dotfiles/home/AGENTS.md` is the one rule set, linked to `~/AGENTS.md`, `~/.claude/CLAUDE.md` and `~/.grok/AGENTS.md`.
 - `.claude/settings.json` is symlinked, and Claude Code rewrites it in place (reordering keys, tweaking `theme`).
   This surfaces as a phantom uncommitted diff after a session. It is noise, safe to discard with `git checkout --` before pulling.
 - `packages.sh` may set zsh as the default shell and prompt for a password. Shell and program changes only take effect in a new terminal or after `source ~/.zshrc`.
