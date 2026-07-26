@@ -187,3 +187,6 @@ fi
 
 # Claude Code in auto mode (no permission prompts)
 alias cc="claude --dangerously-skip-permissions"
+
+# grok in auto mode (no permission prompts)
+alias gg="grok --always-approve"

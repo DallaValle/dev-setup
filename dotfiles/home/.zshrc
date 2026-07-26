@@ -37,6 +37,9 @@ alias l='ls -CF'
 # Claude Code in auto mode (no permission prompts)
 alias cc="claude --dangerously-skip-permissions"
 
+# grok in auto mode (no permission prompts)
+alias gg="grok --always-approve"
+
 # --- WSL-only: use Windows git on /mnt/c (much faster than Linux git on DrvFs) ---
 if [[ -n ${WSL_DISTRO_NAME-} ]]; then
 	alias git=git.exe
