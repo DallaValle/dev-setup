@@ -116,13 +116,16 @@ fi
 # machines start in zsh. Safe to re-run: skips when zsh is already default.
 if have zsh; then
 	zsh_path="$(command -v zsh)"
-	if ! grep -qxF "$zsh_path" /etc/shells 2>/dev/null; then
-		echo "registering $zsh_path in /etc/shells"
-		echo "$zsh_path" | sudo tee -a /etc/shells >/dev/null
-	fi
 	if [ "$(basename "${SHELL:-}")" = zsh ]; then
 		echo "zsh already the default shell"
 	else
+		# Only touch /etc/shells when we are actually about to chsh: it needs sudo,
+		# and on macOS command -v finds Homebrew's zsh while the default stays
+		# /bin/zsh, so registering unconditionally means a sudo prompt on every run.
+		if ! grep -qxF "$zsh_path" /etc/shells 2>/dev/null; then
+			echo "registering $zsh_path in /etc/shells"
+			echo "$zsh_path" | sudo tee -a /etc/shells >/dev/null
+		fi
 		echo "setting zsh as the default shell (you may be prompted for your password)"
 		if chsh -s "$zsh_path"; then
 			echo "default shell set to zsh, restart your terminal to pick it up"
