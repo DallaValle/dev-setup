@@ -111,6 +111,16 @@ else
 	curl -fsSL https://herdr.dev/install.sh | sh
 fi
 
+# treehouse: reusable git worktree pool for parallel AI agent sessions.
+# Official installer drops a prebuilt binary into ~/.local/bin on both platforms.
+# Not pinned: treehouse updates itself with `treehouse update`.
+if have treehouse; then
+	echo "treehouse already installed: $(treehouse --version)"
+else
+	echo "installing treehouse from kunchenguid.github.io/treehouse/install.sh"
+	curl -fsSL https://kunchenguid.github.io/treehouse/install.sh | sh
+fi
+
 # grok: xAI's agentic coding CLI, installed via its official installer into
 # ~/.grok/bin (it also symlinks into ~/.local/bin). The installer appends its own
 # PATH/completions block to .zshrc, which is a symlink into this repo, so it edits

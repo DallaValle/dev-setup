@@ -18,6 +18,7 @@ Software the tracked configs assume is present.
 | Git | all | preinstalled / OS package manager | `dotfiles/windows/.gitconfig` |
 | Claude Code | all | see docs.claude.com | `dotfiles/home/.claude/`, subagents in [`../agents/`](../agents/README.md) |
 | herdr | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/herdr/config.toml` |
+| treehouse | WSL/Linux, macOS | `scripts/packages.sh` | none tracked yet |
 
 `packages.sh` also sets zsh as the default login shell (`chsh`), which is what makes WezTerm open zsh: on Windows the WSL domain launches the login shell, and on macOS the native shell is already zsh.
 
@@ -31,6 +32,11 @@ On both macOS and WSL/Linux `packages.sh` runs herdr's official installer (`curl
 It is deliberately not the Homebrew formula: brew builds herdr and its heavy dependencies (llvm, rust, zig) from source, while the installer fetches a ready binary in seconds.
 It is not version-pinned like neovim: herdr updates itself in place with `herdr update` (and switches release channels with `herdr channel set stable|preview`), so `packages.sh` only bootstraps it and then stays out of the way.
 Its config is tracked at `dotfiles/home/.config/herdr/config.toml` (symlinked to `~/.config/herdr/config.toml` by `install.sh`); currently it just rebinds pane focus to `prefix + arrow`. Validate edits with `herdr config check`.
+
+[treehouse](https://github.com/kunchenguid/treehouse) manages a pool of reusable git worktrees so multiple AI agents can work on the same repo in parallel without re-cloning or stepping on each other.
+On both macOS and WSL/Linux `packages.sh` runs the official installer (`curl -fsSL https://kunchenguid.github.io/treehouse/install.sh | sh`), which drops a prebuilt binary into `~/.local/bin`.
+Like herdr it is not version-pinned: `treehouse update` upgrades in place, so `packages.sh` only bootstraps it.
+Optional config lives at `~/.config/treehouse/config.toml` (user-level) or `treehouse.toml` in a repo root; nothing is tracked here yet.
 
 VS Code is a GUI app, so it is installed once per host and never inside WSL; see [`vscode.md`](vscode.md) for the details.
 On macOS `packages.sh` installs the Homebrew cask (skipping it when the app is already there, e.g. drag-installed) and links the CLI bundled in the app to `~/.local/bin/code`, which is what makes `code .` work in zsh.
