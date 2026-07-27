@@ -39,7 +39,7 @@ Run `packages.sh` first so the programs exist, then `install.sh` to link their c
   Globally the rule set is shared by symlink instead: `dotfiles/home/AGENTS.md` is linked to `~/AGENTS.md`, `~/.claude/CLAUDE.md` and `~/.grok/AGENTS.md`, which is safe because `install.sh` runs inside WSL.
 - `agents/` collects everything about agents: `AGENTS.md` is the rules they follow, `agents/sub-agents/` is the shelf of subagent definitions. Neither is scanned by Claude Code; only `.claude/agents/` is.
 - `agents/sub-agents/` is a shelf, not a deployed config: nothing in it is loaded by any agent, by design. `dotfiles/home/.claude/agents/` is intentionally empty apart from `.gitkeep`, which keeps the directory tracked so `install.sh` can still symlink it.
-  Do not "fix" either of these by moving agents back into `.claude/agents/`; that directory is scanned recursively, so anything under it costs main-context tokens on every turn. See `programs/claude-code.md`.
+  Do not "fix" either of these by moving agents back into `.claude/agents/`; that directory is scanned recursively, so anything under it costs main-context tokens on every turn. See `agents/README.md`.
 - `dotfiles/home/.claude/settings.json` is symlinked to `~/.claude/settings.json`, and Claude Code rewrites it in place (reordering keys, tweaking `theme`).
   This surfaces as a phantom uncommitted diff after a session. It is noise, safe to discard with `git checkout --` before pulling.
 - `packages.sh` may set zsh as the default shell and prompt for a password. Shell and program changes only take effect in a new terminal or after `source ~/.zshrc`.

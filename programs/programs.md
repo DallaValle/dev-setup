@@ -16,7 +16,7 @@ Software the tracked configs assume is present.
 | WezTerm | Windows, macOS | follow [`wezterm.md`](wezterm.md) (same setup on both) | `dotfiles/wezterm/.wezterm.lua` |
 | VS Code (`code`) | Windows, macOS | macOS: `scripts/packages.sh`; Windows: follow [`vscode.md`](vscode.md) | none tracked, VS Code Settings Sync handles it |
 | Git | all | preinstalled / OS package manager | `dotfiles/windows/.gitconfig` |
-| Claude Code | all | see docs.claude.com, notes in [`claude-code.md`](claude-code.md) | `dotfiles/home/.claude/`, agent shelf in `agents/sub-agents/` |
+| Claude Code | all | see docs.claude.com | `dotfiles/home/.claude/`, subagents in [`../agents/`](../agents/README.md) |
 | herdr | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/herdr/config.toml` |
 
 `packages.sh` also sets zsh as the default login shell (`chsh`), which is what makes WezTerm open zsh: on Windows the WSL domain launches the login shell, and on macOS the native shell is already zsh.
