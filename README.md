@@ -16,7 +16,7 @@ Both machines run the same terminal and shell: **WezTerm** with **zsh**. Same ap
 | Path | What's in it |
 |---|---|
 | `programs/` | `programs.md` (the software the configs assume) plus a short wiki per program that needs manual setup, e.g. `wezterm.md` |
-| `dotfiles/home/` | configs symlinked into `$HOME` on WSL/Linux and macOS (`.zshrc`, `.bashrc`, `.profile`, `.zprofile`, `.inputrc`, `.config/nvim`, `.claude/`, `AGENTS.md`). `.zshrc` is the one cross-platform shell config, aliases included; `.bashrc` is only a fallback for bash sessions. `AGENTS.md` is the single global agent rule set, kept out of any one agent's directory: `install.sh` links it to `~/AGENTS.md` and then points `~/.claude/CLAUDE.md` and `~/.grok/AGENTS.md` at it, so every agent reads the same instructions from one file |
+| `dotfiles/home/` | configs symlinked into `$HOME` on WSL/Linux and macOS (`.zshrc`, `.bashrc`, `.profile`, `.zprofile`, `.inputrc`, `.config/nvim`, `.claude/`, `AGENTS.md`). `.zshrc` is the one cross-platform shell config, aliases included; `.bashrc` is only a fallback for bash sessions. `AGENTS.md` is the single global agent rule set, kept out of any one agent's directory: `install.sh` links it to `~/AGENTS.md` and then points `~/.claude/CLAUDE.md` and `~/.grok/AGENTS.md` at it, so every agent reads the same instructions from one file. `.claude/agents/` holds the global Claude Code subagents, one Markdown file per agent |
 | `dotfiles/wezterm/` | `.wezterm.lua`, one cross-platform config applied to Windows and macOS (see `programs/wezterm.md`) |
 | `dotfiles/windows/` | configs applied by hand on the Windows host (`.gitconfig`, `.wslconfig`) |
 | `scripts/` | `packages.sh` (installs programs) and `install.sh` (symlinks the dotfiles) |
