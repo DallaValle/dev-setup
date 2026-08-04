@@ -17,27 +17,27 @@ Software the tracked configs assume is present.
 | VS Code (`code`) | Windows, macOS | macOS: `scripts/packages.sh`; Windows: follow [`vscode.md`](vscode.md) | none tracked, VS Code Settings Sync handles it |
 | Git | all | preinstalled / OS package manager | `dotfiles/windows/.gitconfig` |
 | Claude Code | all | see docs.claude.com | `dotfiles/home/.claude/`, subagents in [`../agents/`](../agents/README.md) |
+| grok (xAI CLI) | WSL/Linux, macOS | `scripts/packages.sh` | `~/.grok/AGENTS.md`, symlinked to the global `dotfiles/home/AGENTS.md` |
 | herdr | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/herdr/config.toml` |
 | treehouse | WSL/Linux, macOS | `scripts/packages.sh` | none tracked yet |
 
 `packages.sh` also sets zsh as the default login shell (`chsh`), which is what makes WezTerm open zsh: on Windows the WSL domain launches the login shell, and on macOS the native shell is already zsh.
 
-On macOS everything above is a Homebrew formula, except herdr (see below).
+On macOS everything above is a Homebrew formula, except herdr, treehouse and grok (see below).
 On WSL/Linux most come from apt, except `fd` (installed as `fdfind`, linked to `fd`) and `lazygit`/`neovim`, which `packages.sh` pulls from their official GitHub releases into `~/.local/bin` because apt's versions are missing or too old.
 Neovim is pinned to `v0.10.4`, the last release that runs on Ubuntu 20.04 (focal, glibc 2.31); newer builds need glibc 2.32+.
 Neovim's own plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim), which bootstraps itself on first launch and installs everything from `dotfiles/home/.config/nvim/lazy-lock.json`.
 
-[herdr](https://github.com/ogulcancelik/herdr) is a terminal workspace manager for AI coding agents, shipped as a single binary.
-On both macOS and WSL/Linux `packages.sh` runs herdr's official installer (`curl -fsSL https://herdr.dev/install.sh | sh`), which drops the right prebuilt binary into `~/.local/bin`.
-It is deliberately not the Homebrew formula: brew builds herdr and its heavy dependencies (llvm, rust, zig) from source, while the installer fetches a ready binary in seconds.
-It is not version-pinned like neovim: herdr updates itself in place with `herdr update` (and switches release channels with `herdr channel set stable|preview`), so `packages.sh` only bootstraps it and then stays out of the way.
-Its config is tracked at `dotfiles/home/.config/herdr/config.toml` (symlinked to `~/.config/herdr/config.toml` by `install.sh`); currently it just rebinds pane focus to `prefix + arrow`. Validate edits with `herdr config check`.
+[herdr](https://github.com/ogulcancelik/herdr), a terminal workspace manager for AI coding agents, and [treehouse](https://github.com/kunchenguid/treehouse), a pool of reusable git worktrees so several agents can work on one repo without re-cloning, are both single binaries installed from their official installer on both platforms.
+herdr deliberately skips the Homebrew formula: brew builds it and its dependencies (llvm, rust, zig) from source, while the installer fetches a ready binary in seconds.
+Neither is version-pinned, both self-update (`herdr update`, `treehouse update`), so `packages.sh` only bootstraps them.
+herdr's config is tracked at `dotfiles/home/.config/herdr/config.toml`; it just rebinds pane focus to `prefix + arrow`, validate edits with `herdr config check`.
+treehouse config would live at `~/.config/treehouse/config.toml` or `treehouse.toml` in a repo root, nothing tracked yet.
 
-[treehouse](https://github.com/kunchenguid/treehouse) manages a pool of reusable git worktrees so multiple AI agents can work on the same repo in parallel without re-cloning or stepping on each other.
-On both macOS and WSL/Linux `packages.sh` runs the official installer (`curl -fsSL https://kunchenguid.github.io/treehouse/install.sh | sh`), which drops a prebuilt binary into `~/.local/bin`.
-Like herdr it is not version-pinned: `treehouse update` upgrades in place, so `packages.sh` only bootstraps it.
-Optional config lives at `~/.config/treehouse/config.toml` (user-level) or `treehouse.toml` in a repo root; nothing is tracked here yet.
+grok comes from its own installer too, into `~/.grok/bin`.
+Its installer appends a PATH and completions block to `.zshrc`, which is a symlink into this repo, so that block is tracked here and the installer rewrites it in place rather than duplicating it.
 
-VS Code is a GUI app, so it is installed once per host and never inside WSL; see [`vscode.md`](vscode.md) for the details.
-On macOS `packages.sh` installs the Homebrew cask (skipping it when the app is already there, e.g. drag-installed) and links the CLI bundled in the app to `~/.local/bin/code`, which is what makes `code .` work in zsh.
-On Windows it is a `winget` install on the host, and `code .` works inside WSL through PATH interop, so there `packages.sh` only checks that it is reachable.
+treehouse does not run on Ubuntu 20.04: every upstream Linux build links `GLIBC_2.34` against focal's 2.31, back to v1.0.0, so there is nothing to pin to the way neovim is and `packages.sh` skips it below glibc 2.34.
+Upgrading the WSL distro to 22.04+ unblocks it and retires the neovim pin at the same time.
+
+VS Code is a GUI app, installed once per host and never inside WSL: Homebrew cask on macOS, `winget` on the Windows host where WSL reaches it through PATH interop, see [`vscode.md`](vscode.md).

@@ -1,9 +1,7 @@
 # WezTerm
 
-Same terminal and shell on Windows and macOS: WezTerm running zsh.
-Install WezTerm, then apply the shared config at `dotfiles/wezterm/.wezterm.lua`.
-That file is one cross-platform Lua config, it detects the OS at runtime, so both machines get identical appearance and keybindings.
-The shell is zsh on both (config in [`../dotfiles/home/.zshrc`](../dotfiles/home/.zshrc)); only the launcher entries and new-tab keys differ per OS.
+Install WezTerm, then apply the shared config at `dotfiles/wezterm/.wezterm.lua`: one Lua file that detects the OS at runtime, so both machines get identical appearance and keybindings.
+The shell it opens is zsh on both, configured in [`../dotfiles/home/.zshrc`](../dotfiles/home/.zshrc).
 
 Apply = copy the file into place. It is a copy, not a symlink, so after editing the repo copy re-run the copy step to apply.
 
