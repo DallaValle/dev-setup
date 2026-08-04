@@ -23,6 +23,24 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'l:|=* r:|=* m:{a-zA-Z
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*' menu select
 
+# --- Key bindings ---
+# zsh's emacs keymap already has ^W, alt+backspace, alt+b/f/d, but it binds none of
+# the *modified* cursor sequences, so ctrl/alt + arrow silently do nothing.
+# These are the xterm CSI forms, which is what WezTerm sends on both macOS and Windows.
+bindkey '^[[1;5D' backward-word   # ctrl+left
+bindkey '^[[1;5C' forward-word    # ctrl+right
+bindkey '^[[1;3D' backward-word   # alt+left
+bindkey '^[[1;3C' forward-word    # alt+right
+bindkey '^[[3;5~' kill-word       # ctrl+delete
+bindkey '^[[3;3~' kill-word       # alt+delete
+# ctrl+backspace arrives as ^H, which otherwise deletes a single char like plain
+# backspace. Plain backspace is ^? and keeps its default.
+bindkey '^H' backward-kill-word
+# Home/End: terminfo only lists the application-mode forms (^[OH/^[OF) that zsh
+# already binds; a bare prompt gets the normal-mode forms instead.
+bindkey '^[[H' beginning-of-line
+bindkey '^[[F' end-of-line
+
 # --- Aliases ---
 if ls --color=auto >/dev/null 2>&1; then
 	alias ls='ls --color=auto'   # GNU/Linux
