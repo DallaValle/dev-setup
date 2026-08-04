@@ -2,6 +2,9 @@
 	editor = \"C:/Program Files/notepad++/notepad++.exe\" -multiInst -nosession
 	autocrlf = false
 	eol = lf
+	# Git already normalises to LF via .gitattributes; the per-file
+	# "CRLF will be replaced by LF" notice is pure noise, so mute it.
+	safecrlf = false
 [user]
 	name = sergio.dallavalle@supertext.com
 	email = sergio.dallavalle@supertext.com
