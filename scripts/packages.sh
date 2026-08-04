@@ -12,6 +12,22 @@ LOCAL_BIN="$HOME/.local/bin"
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
+# System glibc version, e.g. 2.31. Empty on macOS, which has no ldd.
+glibc_version() {
+	ldd --version 2>/dev/null | head -1 | awk '{print $NF}' | grep -E '^[0-9]+\.[0-9]+$' || true
+}
+
+# True when the system glibc is at least $1. An unknown version counts as new
+# enough: better to attempt the install and fail loudly than to skip on a bad parse.
+glibc_at_least() {
+	local want="$1" got
+	got="$(glibc_version)"
+	if [ -z "$got" ]; then
+		return 0
+	fi
+	[ "$(printf '%s\n%s\n' "$want" "$got" | sort -V | head -1)" = "$want" ]
+}
+
 if [ "$OS" = "Darwin" ]; then
 	for pkg in tmux ripgrep fd fzf jq lazygit neovim zsh zsh-autosuggestions zsh-syntax-highlighting; do
 		if brew list --versions "$pkg" >/dev/null 2>&1; then
@@ -114,8 +130,18 @@ fi
 # treehouse: reusable git worktree pool for parallel AI agent sessions.
 # Official installer drops a prebuilt binary into ~/.local/bin on both platforms.
 # Not pinned: treehouse updates itself with `treehouse update`.
-if have treehouse; then
+# Every upstream Linux build links GLIBC_2.34 (the release that folded libpthread
+# into libc), so on Ubuntu 20.04 (focal, glibc 2.31) none of them load, back to
+# v1.0.0. Same wall as neovim, but here no older release clears it, so skip
+# outright rather than pin. `have` only proves the file exists, and a binary the
+# loader rejects still passes it, so check that it actually runs.
+if have treehouse && treehouse --version >/dev/null 2>&1; then
 	echo "treehouse already installed: $(treehouse --version)"
+elif ! glibc_at_least 2.34; then
+	echo "skipping treehouse: needs glibc 2.34+, this system has $(glibc_version)"
+	if have treehouse; then
+		echo "  a treehouse that cannot load is on PATH, remove it with: rm $(command -v treehouse)"
+	fi
 else
 	echo "installing treehouse from kunchenguid.github.io/treehouse/install.sh"
 	curl -fsSL https://kunchenguid.github.io/treehouse/install.sh | sh
