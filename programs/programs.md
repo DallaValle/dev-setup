@@ -6,7 +6,6 @@ Software the tracked configs assume is present.
 | Program | Platform | Install | Config |
 |---|---|---|---|
 | zsh + zsh-autosuggestions + zsh-syntax-highlighting | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.zshrc` |
-| tmux | WSL/Linux, macOS | `scripts/packages.sh` | none tracked yet |
 | ripgrep (`rg`) | WSL/Linux, macOS | `scripts/packages.sh` | none |
 | fd | WSL/Linux, macOS | `scripts/packages.sh` | none |
 | fzf | WSL/Linux, macOS | `scripts/packages.sh` | none |

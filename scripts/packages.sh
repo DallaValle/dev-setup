@@ -29,7 +29,7 @@ glibc_at_least() {
 }
 
 if [ "$OS" = "Darwin" ]; then
-	for pkg in tmux ripgrep fd fzf jq lazygit neovim zsh zsh-autosuggestions zsh-syntax-highlighting; do
+	for pkg in ripgrep fd fzf jq lazygit neovim zsh zsh-autosuggestions zsh-syntax-highlighting; do
 		if brew list --versions "$pkg" >/dev/null 2>&1; then
 			echo "$pkg already installed"
 		else
@@ -47,7 +47,6 @@ else
 	have fd || have fdfind    || apt_need+=(fd-find)
 	have fzf                  || apt_need+=(fzf)
 	have jq                   || apt_need+=(jq)
-	have tmux                 || apt_need+=(tmux)
 	have zsh                  || apt_need+=(zsh)
 	[ -r /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] || apt_need+=(zsh-autosuggestions)
 	[ -r /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ] || apt_need+=(zsh-syntax-highlighting)
