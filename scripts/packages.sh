@@ -4,6 +4,10 @@
 # macOS: Homebrew. WSL/Linux: apt where reliable, official GitHub release
 # binaries for neovim and lazygit (apt's are missing or stale).
 # herdr is installed the same way on both, via its official installer.
+#
+# Version policy: a new machine gets the LATEST of everything. Every pin below
+# is a documented exception with a stated reason and a condition that retires
+# it, never a default. Today the only one is neovim on Ubuntu 20.04.
 set -euo pipefail
 
 OS="$(uname -s)"

@@ -3,6 +3,23 @@
 Software the tracked configs assume is present.
 `scripts/packages.sh` installs the ones that can be automated, the rest are manual.
 
+## Version policy
+
+**A new machine gets the latest version of everything.**
+No pinning by default: apt and Homebrew resolve to current, the GitHub-release and official-installer paths fetch the newest build, and the self-updating tools keep themselves current.
+A pin is an exception that has to earn its place, and each one carries the reason it exists and the condition that removes it.
+There is exactly one today, plus one program skipped outright, and both are the same cause:
+
+| Exception | Why | Retired when |
+|---|---|---|
+| Neovim pinned to `v0.10.4` | later builds need glibc 2.32+, focal has 2.31 | the WSL distro moves to 22.04+ |
+| treehouse not installed | every build needs glibc 2.34+, none older clears it | the WSL distro moves to 22.04+ |
+
+Both disappear on the same upgrade, which is the argument for doing it.
+Neovim's `lazy-lock.json` is not an exception to this: it is a lockfile that keeps plugins identical across machines, and `:Lazy update` moves it forward deliberately.
+
+## What gets installed
+
 | Program | Platform | Install | Config |
 |---|---|---|---|
 | zsh + zsh-autosuggestions + zsh-syntax-highlighting | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.zshrc` |
@@ -24,7 +41,6 @@ Software the tracked configs assume is present.
 
 On macOS everything above is a Homebrew formula, except herdr, treehouse and grok (see below).
 On WSL/Linux most come from apt, except `fd` (installed as `fdfind`, linked to `fd`) and `lazygit`/`neovim`, which `packages.sh` pulls from their official GitHub releases into `~/.local/bin` because apt's versions are missing or too old.
-Neovim is pinned to `v0.10.4`, the last release that runs on Ubuntu 20.04 (focal, glibc 2.31); newer builds need glibc 2.32+.
 Neovim's own plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim), which bootstraps itself on first launch and installs everything from `dotfiles/home/.config/nvim/lazy-lock.json`.
 
 [herdr](https://github.com/ogulcancelik/herdr), a terminal workspace manager for AI coding agents, and [treehouse](https://github.com/kunchenguid/treehouse), a pool of reusable git worktrees so several agents can work on one repo without re-cloning, are both single binaries installed from their official installer on both platforms.
@@ -36,8 +52,5 @@ treehouse config would live at `~/.config/treehouse/config.toml` or `treehouse.t
 grok comes from its own installer too, into `~/.grok/bin`.
 Its installer appends a PATH and completions block to `.zshrc`, which is a symlink into this repo, so that block is tracked here and the installer rewrites it in place rather than duplicating it.
 Config lives at `dotfiles/home/.grok/config.toml` and is symlinked to `~/.grok/config.toml` by `install.sh`.
-
-treehouse does not run on Ubuntu 20.04: every upstream Linux build links `GLIBC_2.34` against focal's 2.31, back to v1.0.0, so there is nothing to pin to the way neovim is and `packages.sh` skips it below glibc 2.34.
-Upgrading the WSL distro to 22.04+ unblocks it and retires the neovim pin at the same time.
 
 VS Code is a GUI app, installed once per host and never inside WSL: Homebrew cask on macOS, `winget` on the Windows host where WSL reaches it through PATH interop, see [`vscode.md`](vscode.md).

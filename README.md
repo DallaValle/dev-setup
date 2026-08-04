@@ -33,4 +33,5 @@ cd ~/dev-setup
 ```
 
 Both scripts are idempotent, re-running them is safe.
+A new machine gets the latest of everything; the two exceptions and what retires them are in [`programs/programs.md`](programs/programs.md).
 `dotfiles/windows/` is applied manually because `install.sh` runs inside WSL and cannot write the Windows profile.

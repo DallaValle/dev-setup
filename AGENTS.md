@@ -25,6 +25,7 @@ Hence the order: programs first, then their configs.
 ## Gotchas
 
 - Editing a symlinked config edits the repo directly. To sync a change to other machines, commit and push it.
+- Install the latest of everything. A version pin, or a program skipped on a platform, is an exception that needs its reason and its retirement condition recorded in the exception table in `programs/programs.md`, never a silent default.
 - This file is the project rule set, and it is the only place project rules go.
   It sits at the repo root so that any agent which auto-discovers `AGENTS.md` finds it with no extra wiring.
   Claude Code reads `CLAUDE.md` and never `AGENTS.md`, so `.claude/CLAUDE.md` is a one-line `@../AGENTS.md` import that points back here.
