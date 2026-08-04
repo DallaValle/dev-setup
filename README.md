@@ -15,11 +15,11 @@ Both machines run the same terminal and shell: **WezTerm** with **zsh**. Same ap
 
 | Path | What's in it |
 |---|---|
-| `agents/` | everything about agents in one place. `AGENTS.md` is the rule set every agent working *on this repo* reads, kept out of the root so no vendor-named file sits beside `README.md`; `.claude/CLAUDE.md` is a one-line `@../agents/AGENTS.md` import, since Claude Code reads `CLAUDE.md` and never `AGENTS.md`. Rules go here only, never into the pointer |
-| `agents/sub-agents/` | shelf of curated Claude Code subagents, one Markdown file per agent. Deliberately *not* deployed: nothing here is loaded until it is copied into a `.claude/agents/` directory, the only path Claude Code scans. See [`agents/README.md`](agents/README.md) |
+| `AGENTS.md` | the rule set every agent working *on this repo* reads, at the root so agents that auto-discover it need no wiring. Claude Code reaches it through the one-line import in `.claude/CLAUDE.md` |
+| `agents/` | `sub-agents/`, the shelf of curated subagents, deliberately not deployed. Explained in [`agents/README.md`](agents/README.md) |
 | `programs/` | `programs.md` (the software the configs assume) plus a short wiki per program that needs manual setup by hand on a Windows or macOS host: `wezterm.md`, `vscode.md`. Nothing else belongs here |
-| `dotfiles/home/` | configs symlinked into `$HOME` on WSL/Linux and macOS (`.zshrc`, `.bashrc`, `.profile`, `.zprofile`, `.inputrc`, `.config/nvim`, `.claude/`, `AGENTS.md`). `.zshrc` is the one cross-platform shell config, aliases included; `.bashrc` is only a fallback for bash sessions. `AGENTS.md` is the single global agent rule set, kept out of any one agent's directory: `install.sh` links it to `~/AGENTS.md` and then points `~/.claude/CLAUDE.md` and `~/.grok/AGENTS.md` at it, so every agent reads the same instructions from one file. `.claude/agents/` is where a subagent goes to become globally active, and is intentionally empty by default (see `agents/sub-agents/`) |
-| `dotfiles/wezterm/` | `.wezterm.lua`, one cross-platform config applied to Windows and macOS (see `programs/wezterm.md`) |
+| `dotfiles/home/` | configs symlinked into `$HOME` on WSL/Linux and macOS (`.zshrc`, `.bashrc`, `.profile`, `.zprofile`, `.inputrc`, `.config/nvim`, `.claude/`, `AGENTS.md`). `.zshrc` is the one cross-platform shell config, aliases included; `.bashrc` is only a fallback for bash sessions. `AGENTS.md` here is the *global* rule set, linked to every agent's expected filename by `install.sh`, and `.claude/agents/` is where a subagent goes to become globally active (see [`agents/README.md`](agents/README.md)) |
+| `dotfiles/wezterm/` | `.wezterm.lua`, copied rather than symlinked because it lands on the Windows and macOS host, not in WSL |
 | `dotfiles/windows/` | configs applied by hand on the Windows host (`.gitconfig`, `.wslconfig`) |
 | `scripts/` | `packages.sh` (installs programs) and `install.sh` (symlinks the dotfiles) |
 
