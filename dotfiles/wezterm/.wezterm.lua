@@ -56,6 +56,12 @@ if is_windows then
 	config.max_fps = 120 -- default 60 adds up to ~16ms keystroke-to-pixel
 	config.animation_fps = 1 -- stop repainting cursor/background between frames
 	config.cursor_blink_rate = 0 -- a blinking cursor keeps the GPU awake for no gain
+	-- Lag here is proportional to window pixel area, not cell count (upstream #4110,
+	-- #805, and measured: 14MiB of output takes ~13s filling the panel vs ~9s small).
+	-- So open windowed rather than covering the 3840x2400 panel. Win+Up / Win+Down
+	-- maximise and restore, which is the A/B test for whether this is worth the size.
+	config.initial_cols = 120
+	config.initial_rows = 42
 	config.default_domain = "WSL:Ubuntu-20.04"
 	config.wsl_domains = {
 		{
