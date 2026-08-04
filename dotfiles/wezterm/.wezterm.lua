@@ -15,7 +15,6 @@ config.font = wezterm.font_with_fallback({
 	"Consolas",
 })
 config.font_size = 11.0
-config.window_background_opacity = 0.97
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.window_padding = { left = 8, right = 8, top = 8, bottom = 8 }
 
@@ -45,6 +44,18 @@ config.keys = {
 
 -- Platform-specific: default shell, launcher entries, new-tab keys
 if is_windows then
+	-- Rendering and input latency. All of it was measured on Windows only, against a
+	-- hybrid Intel Arc + RTX laptop driving a 3840x2400 panel, so it stays scoped here.
+	-- Opacity < 1.0 makes DWM alpha-composite every frame, and 3% transparency buys
+	-- nothing; WebGpu (the default) lands on a slower Dx12 path than OpenGL here.
+	-- Measured dead ends, do not re-add: forcing the RTX via webgpu_power_preference
+	-- (the panel hangs off the iGPU, so it only adds a cross-adapter copy), disabling
+	-- ligatures, front_end = "Software", and lowering max_fps or scrollback_lines.
+	config.window_background_opacity = 1.0
+	config.front_end = "OpenGL"
+	config.max_fps = 120 -- default 60 adds up to ~16ms keystroke-to-pixel
+	config.animation_fps = 1 -- stop repainting cursor/background between frames
+	config.cursor_blink_rate = 0 -- a blinking cursor keeps the GPU awake for no gain
 	config.default_domain = "WSL:Ubuntu-20.04"
 	config.wsl_domains = {
 		{
