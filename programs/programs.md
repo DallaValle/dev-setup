@@ -17,7 +17,7 @@ Software the tracked configs assume is present.
 | VS Code (`code`) | Windows, macOS | macOS: `scripts/packages.sh`; Windows: follow [`vscode.md`](vscode.md) | none tracked, VS Code Settings Sync handles it |
 | Git | all | preinstalled / OS package manager | `dotfiles/windows/.gitconfig` |
 | Claude Code | all | see docs.claude.com | `dotfiles/home/.claude/`, subagents in [`../agents/`](../agents/README.md) |
-| grok (xAI CLI) | WSL/Linux, macOS | `scripts/packages.sh` | `~/.grok/AGENTS.md`, symlinked to the global `dotfiles/home/AGENTS.md` |
+| grok (xAI CLI) | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.grok/config.toml`; `~/.grok/AGENTS.md` is also linked to the global `dotfiles/home/AGENTS.md` |
 | herdr | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/herdr/config.toml` |
 | treehouse | WSL/Linux, macOS | `scripts/packages.sh` | none tracked yet |
 
@@ -36,6 +36,7 @@ treehouse config would live at `~/.config/treehouse/config.toml` or `treehouse.t
 
 grok comes from its own installer too, into `~/.grok/bin`.
 Its installer appends a PATH and completions block to `.zshrc`, which is a symlink into this repo, so that block is tracked here and the installer rewrites it in place rather than duplicating it.
+Config lives at `dotfiles/home/.grok/config.toml` and is symlinked to `~/.grok/config.toml` by `install.sh`.
 
 treehouse does not run on Ubuntu 20.04: every upstream Linux build links `GLIBC_2.34` against focal's 2.31, back to v1.0.0, so there is nothing to pin to the way neovim is and `packages.sh` skips it below glibc 2.34.
 Upgrading the WSL distro to 22.04+ unblocks it and retires the neovim pin at the same time.

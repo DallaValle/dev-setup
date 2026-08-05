@@ -1,0 +1,28 @@
+[cli]
+installer = "internal"
+
+# Dismiss "Help improve Grok" coding-data banner (account is already opted out)
+privacy_banner_acked = true
+
+[marketplace]
+default_skills_installs_purged = true
+official_marketplace_auto_installed = true
+
+[[marketplace.sources]]
+name = "xAI Official"
+git = "https://github.com/xai-org/plugin-marketplace.git"
+
+[features]
+# Disable session recap feature (/recap and automatic idle recaps)
+session_recap = false
+
+[ui]
+max_thoughts_width = 120
+fork_secondary_model = "grok-4.5"
+yolo = false
+compact_mode = false
+permission_mode = "always-approve"
+
+# Also turn off recap in notification settings
+[ui.notifications]
+session_recap = false

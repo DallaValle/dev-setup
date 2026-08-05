@@ -18,6 +18,7 @@ FILES=(
 	.config/herdr/config.toml
 	.claude/settings.json
 	.claude/agents
+	.grok/config.toml
 	AGENTS.md
 )
 

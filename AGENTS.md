@@ -34,6 +34,8 @@ Hence the order: programs first, then their configs.
   Never move agents into a `.claude/agents/` directory to "activate" them: it is scanned recursively, so anything under it costs main-context tokens every turn. [`agents/README.md`](agents/README.md) has the reasoning and the activation steps.
 - `dotfiles/home/.claude/settings.json` is symlinked to `~/.claude/settings.json`, and Claude Code rewrites it in place (reordering keys, tweaking `theme`).
   This surfaces as a phantom uncommitted diff after a session. It is noise, safe to discard with `git checkout --` before pulling.
+- `dotfiles/home/.grok/config.toml` is symlinked to `~/.grok/config.toml` the same way.
+  Grok may also rewrite marketplace flags there; treat pure runtime churn the same as Claude's settings noise.
 - `packages.sh` may set zsh as the default shell and prompt for a password. Shell and program changes only take effect in a new terminal or after `source ~/.zshrc`.
 - WezTerm is not handled by either script. Follow `programs/wezterm.md` to install and configure it by hand on Windows and macOS.
 - `dotfiles/windows/` is applied manually on the Windows host, since `install.sh` runs inside WSL and cannot write the Windows profile.
