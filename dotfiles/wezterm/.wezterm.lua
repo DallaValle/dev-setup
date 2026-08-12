@@ -50,18 +50,57 @@ if is_windows then
 	-- nothing; WebGpu (the default) lands on a slower Dx12 path than OpenGL here.
 	-- Measured dead ends, do not re-add: forcing the RTX via webgpu_power_preference
 	-- (the panel hangs off the iGPU, so it only adds a cross-adapter copy), disabling
-	-- ligatures, front_end = "Software", and lowering max_fps or scrollback_lines.
+	-- ligatures, front_end = "Software", and lowering scrollback_lines.
 	config.window_background_opacity = 1.0
 	config.front_end = "OpenGL"
-	config.max_fps = 120 -- default 60 adds up to ~16ms keystroke-to-pixel
+	-- max_fps is a trade, not a dead end: at 22k cells, 400k lines took ~8.8s at 120 and
+	-- ~4.9s at 30, because fewer frames repaint less. Keep 120 anyway - it buys the ~8ms
+	-- keystroke-to-pixel that typing feels, and the grid clamp below removes the reason
+	-- the frames got expensive in the first place.
+	config.max_fps = 120
 	config.animation_fps = 1 -- stop repainting cursor/background between frames
 	config.cursor_blink_rate = 0 -- a blinking cursor keeps the GPU awake for no gain
-	-- Lag here is proportional to window pixel area, not cell count (upstream #4110,
-	-- #805, and measured: 14MiB of output takes ~13s filling the panel vs ~9s small).
-	-- So open windowed rather than covering the 3840x2400 panel. Win+Up / Win+Down
-	-- maximise and restore, which is the A/B test for whether this is worth the size.
+	-- Lag tracks the cell grid (cols x rows), not the window's pixel area. Measured on
+	-- 2026-08-12: 400k lines took 3.0s at 120x53 and 6.1s at 264x107 in the *same* 1.5Mpx
+	-- window, while a 4.7Mpx window holding only 106x12 stayed at 2.7s.
 	config.initial_cols = 120
 	config.initial_rows = 42
+	-- Which is why a display change hurt: dock, undock or drag to a panel with different
+	-- scaling and WezTerm keeps the pixel size but re-derives the grid from the new DPI,
+	-- so a 120x43 window came back as 206x65 crossing 125% to 100%, and every keystroke
+	-- repaints all of it. Clamp the grid instead of relying on Win+Down by hand. 200x60
+	-- leaves a maximised 1920x1200 monitor (174x54) alone and only bites above that.
+	local MAX_COLS, MAX_ROWS = 200, 60
+	local function clamp_grid(window)
+		if window == nil then
+			return
+		end
+		local ok, err = pcall(function()
+			local dims = window:get_dimensions()
+			if dims.is_full_screen then -- explicit intent, leave it be
+				return
+			end
+			-- Tab size, not pane size: a split pane reports its own smaller grid.
+			local size = window:mux_window():active_tab():get_size()
+			if size.cols <= MAX_COLS and size.rows <= MAX_ROWS then
+				return
+			end
+			-- Derive cell size from the live grid rather than from font metrics, so this
+			-- holds at any DPI.
+			local cell_w = size.pixel_width / size.cols
+			local cell_h = size.pixel_height / size.rows
+			window:restore() -- a maximised window ignores a resize until it is restored
+			window:set_inner_size(
+				math.floor(math.min(size.cols, MAX_COLS) * cell_w),
+				math.floor(math.min(size.rows, MAX_ROWS) * cell_h)
+			)
+		end)
+		if not ok then
+			wezterm.log_error("clamp_grid: " .. tostring(err))
+		end
+	end
+	wezterm.on("window-resized", clamp_grid)
+	wezterm.on("window-config-reloaded", clamp_grid)
 	config.default_domain = "WSL:Ubuntu-20.04"
 	config.wsl_domains = {
 		{
