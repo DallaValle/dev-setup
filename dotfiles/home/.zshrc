@@ -18,6 +18,9 @@ typeset -U path
 [[ -d $HOME/.local/bin ]] && path=("$HOME/.local/bin" $path)
 
 # --- Completion: case-insensitive + substring matching ---
+# First match in fpath wins, so user-local completions shadow broken vendor ones
+# (Docker Desktop leaves a dangling _docker symlink whenever it is not running).
+[[ -d $HOME/.zsh/completions ]] && fpath=("$HOME/.zsh/completions" $fpath)
 autoload -Uz compinit && compinit
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'l:|=* r:|=* m:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"

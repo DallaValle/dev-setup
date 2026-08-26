@@ -11,6 +11,7 @@ BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 FILES=(
 	.bashrc
 	.zshrc
+	.zshenv
 	.profile
 	.zprofile
 	.inputrc
