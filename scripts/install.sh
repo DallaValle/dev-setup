@@ -18,6 +18,7 @@ FILES=(
 	.config/nvim
 	.config/herdr/config.toml
 	.claude/settings.json
+	.claude/statusline.sh
 	.claude/agents
 	.grok/config.toml
 	AGENTS.md
