@@ -4,7 +4,7 @@ These are common instructions for Sergio's agents across all scenarios.
 
 ## General Guidelines
 
-* Never use the em dash "—". Use plain dash "-" instead or comma.
+* Never use the em dash "—" or "-" in comment or docs.
 * Code comments must be synthetic and meaningful: short, high-signal "smart" comments that explain the *why*, not the obvious *what*.
   Keep them easy to scan (one clear line where possible) and avoid verbose, redundant, or boilerplate comments.
 * Always write commit messages in Conventional Commits format: `type(optional-scope): description`, e.g. `fix: resolve circular import in document worker`.
