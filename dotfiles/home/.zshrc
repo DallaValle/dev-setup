@@ -140,3 +140,4 @@ export PATH="$HOME/.grok/bin:$PATH"
 fpath=(~/.grok/completions/zsh $fpath)
 autoload -Uz compinit && compinit -C
 # <<< grok installer <<<
+[ -z "$SSH_AUTH_SOCK" ] && eval "$(ssh-agent -s)" >/dev/null && ssh-add -q ~/.ssh/id_github 2>/dev/null
