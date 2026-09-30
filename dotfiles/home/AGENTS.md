@@ -27,3 +27,32 @@ These are common instructions for Sergio's agents across all scenarios.
 * When the current branch is not `main` or `develop`, apply the changes I ask for directly on that branch.
   The branch I am on is the branch I want the work on, so never run a state-changing git command to move it elsewhere: no branch, checkout, stash, commit, or push unless I ask.
   Read-only git such as `status`, `diff`, or `log` is fine.
+
+## Parallel work with Herdr
+
+Sergio watches parallel agent work in [Herdr](https://herdr.dev/docs/agent-automation/).
+A repo opts in by naming its Herdr workspace and worktree root in its own AGENTS.md; these rules then apply.
+
+* Never use in-chat subagents (Grok `spawn_subagent`, Claude `Agent`) for parallel implementation: they hide under the chat and share one checkout.
+* One task = one git worktree off `origin/main` = one Herdr tab = one named agent = one branch = one PR.
+* The coordinator pane stays on the main checkout and never gets killed.
+* Create the tab with `--no-focus` so Sergio's view does not move, and capture the IDs it returns instead of guessing them.
+* Start Grok (`--kind grok`) or Claude (`--kind claude`) in the tab's root pane; `agent start` needs an empty shell pane and never creates tabs.
+* If an agent keeps failing (server errors, quota), stop it and start the other kind in the same pane.
+* After prompting, check with `herdr agent read` that it started; Claude can leave a long prompt unsent in its input box, so send `enter`.
+* Never start a second agent on a task or files that are already in flight.
+* Agents open PRs; they never merge.
+
+```bash
+git fetch origin main
+git worktree add -b "$task" "$WT/$task" origin/main
+
+created=$(herdr tab create --workspace "$ws" --cwd "$WT/$task" --label "$task" --no-focus)
+pane=$(printf '%s\n' "$created" | jq -r '.result.root_pane.pane_id')
+
+herdr agent start "$task" --kind grok --pane "$pane"
+herdr agent prompt "$task" "$(cat "$prompt_file")"
+```
+
+Watch and talk: `herdr agent read <name> --source recent-unwrapped --lines 120`, `herdr agent wait <name> --until blocked --until done --timeout 120000`, `herdr agent prompt <name> "…"`.
+Stop: `herdr agent send-keys <name> ctrl+c`, and `/exit` in the pane if the agent is still up.
