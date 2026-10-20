@@ -162,6 +162,18 @@ else
 	curl -fsSL https://x.ai/cli/install.sh | bash
 fi
 
+# codex: OpenAI's agentic coding CLI, signs in with a ChatGPT plan via `codex login`.
+# Official installer on both platforms: a checksum verified static binary into
+# ~/.local/bin, so no Node and no glibc floor. ~/.local/bin is already on PATH,
+# so the installer leaves the tracked .zshrc alone. Non interactive skips its
+# prompts. Not pinned: codex updates itself.
+if have codex; then
+	echo "codex already installed: $(codex --version)"
+else
+	echo "installing codex from chatgpt.com/codex/install.sh"
+	curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
+fi
+
 # VS Code: a GUI app, so it is installed per host, not per shell.
 # On macOS the cask provides both the app and the `code` CLI. On WSL the editor
 # lives on the Windows host and `code` reaches the distro through PATH interop

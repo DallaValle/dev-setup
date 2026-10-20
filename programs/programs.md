@@ -34,12 +34,13 @@ Neovim's `lazy-lock.json` is not an exception to this: it is a lockfile that kee
 | Git | all | preinstalled / OS package manager | `dotfiles/windows/.gitconfig` |
 | Claude Code | all | see docs.claude.com | `dotfiles/home/.claude/`, subagents in [`../agents/`](../agents/README.md) |
 | grok (xAI CLI) | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.grok/config.toml`; `~/.grok/AGENTS.md` is also linked to the global `dotfiles/home/AGENTS.md` |
+| Codex (OpenAI CLI) | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.codex/config.toml`; `~/.codex/AGENTS.md` is linked to the global `dotfiles/home/AGENTS.md` |
 | herdr | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/herdr/config.toml` |
 | treehouse | WSL/Linux, macOS | `scripts/packages.sh` | none tracked yet |
 
 `packages.sh` also sets zsh as the default login shell (`chsh`), which is what makes WezTerm open zsh: on Windows the WSL domain launches the login shell, and on macOS the native shell is already zsh.
 
-On macOS everything above is a Homebrew formula, except herdr, treehouse and grok (see below).
+On macOS everything above is a Homebrew formula, except herdr, treehouse, grok and Codex (see below).
 On WSL/Linux most come from apt, except `fd` (installed as `fdfind`, linked to `fd`) and `lazygit`/`neovim`, which `packages.sh` pulls from their official GitHub releases into `~/.local/bin` because apt's versions are missing or too old.
 Neovim's own plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim), which bootstraps itself on first launch and installs everything from `dotfiles/home/.config/nvim/lazy-lock.json`.
 
@@ -52,5 +53,11 @@ treehouse config would live at `~/.config/treehouse/config.toml` or `treehouse.t
 grok comes from its own installer too, into `~/.grok/bin`.
 Its installer appends a PATH and completions block to `.zshrc`, which is a symlink into this repo, so that block is tracked here and the installer rewrites it in place rather than duplicating it.
 Config lives at `dotfiles/home/.grok/config.toml` and is symlinked to `~/.grok/config.toml` by `install.sh`.
+
+[Codex](https://github.com/openai/codex), OpenAI's coding agent CLI, also comes from its official installer (`chatgpt.com/codex/install.sh`) on both platforms.
+It is a checksum verified static musl binary, so it needs no Node and has no glibc floor, and it lands in `~/.local/bin`, already on PATH, so the installer never edits the tracked `.zshrc`.
+It updates itself, so `packages.sh` only bootstraps it.
+Sign in once per machine with `codex login` and pick "Sign in with ChatGPT" to use a ChatGPT Plus or Pro plan instead of API credits; the token stays in `~/.codex/auth.json` and is never tracked.
+`dotfiles/home/.codex/config.toml` configures the status line and is symlinked to `~/.codex/config.toml` by `install.sh`.
 
 VS Code is a GUI app, installed once per host and never inside WSL: Homebrew cask on macOS, `winget` on the Windows host where WSL reaches it through PATH interop, see [`vscode.md`](vscode.md).

@@ -30,7 +30,7 @@ Hence the order: programs first, then their configs.
   It sits at the repo root so that any agent which auto-discovers `AGENTS.md` finds it with no extra wiring.
   Claude Code reads `CLAUDE.md` and never `AGENTS.md`, so `.claude/CLAUDE.md` is a one-line `@../AGENTS.md` import that points back here.
   An import is used instead of a symlink because git symlinks need Administrator or Developer Mode on a Windows checkout.
-  Globally the rule set is shared by symlink instead: `dotfiles/home/AGENTS.md` is linked to `~/AGENTS.md`, `~/.claude/CLAUDE.md` and `~/.grok/AGENTS.md`, which is safe because `install.sh` runs inside WSL.
+  Globally the rule set is shared by symlink instead: `dotfiles/home/AGENTS.md` is linked to `~/AGENTS.md`, `~/.claude/CLAUDE.md`, `~/.grok/AGENTS.md` and `~/.codex/AGENTS.md`, which is safe because `install.sh` runs inside WSL.
 - `agents/sub-agents/` holding no active agents and `dotfiles/home/.claude/agents/` holding nothing but `.gitkeep` are both deliberate, not oversights to fix.
   Never move agents into a `.claude/agents/` directory to "activate" them: it is scanned recursively, so anything under it costs main-context tokens every turn. [`agents/README.md`](agents/README.md) has the reasoning and the activation steps.
 - `dotfiles/home/.claude/settings.json` is symlinked to `~/.claude/settings.json`, and Claude Code rewrites it in place (reordering keys, tweaking `theme`).

@@ -20,6 +20,7 @@ FILES=(
 	.claude/settings.json
 	.claude/statusline.sh
 	.claude/agents
+	.codex/config.toml
 	.grok/config.toml
 	AGENTS.md
 )
@@ -33,9 +34,11 @@ FILES=(
 #   - grok looks only in ~/.grok/ for global rules, matching Agents.md,
 #     Claude.md, AGENT.md or AGENTS.md. The spelling matters on WSL, whose
 #     filesystem is case-sensitive, so an all-caps CLAUDE.md would go unread.
+#   - codex reads global rules only from ~/.codex/AGENTS.md (or $CODEX_HOME).
 ALIASES=(
 	".claude/CLAUDE.md AGENTS.md"
 	".grok/AGENTS.md AGENTS.md"
+	".codex/AGENTS.md AGENTS.md"
 )
 
 # Link $2 (under dotfiles/home) to $1 (under $HOME), reporting it as $1.
