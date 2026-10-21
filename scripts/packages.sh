@@ -2,7 +2,7 @@
 # Installs the CLI tools the tracked configs assume are present.
 # Safe to re-run: each step skips itself if already satisfied.
 # macOS: Homebrew. WSL/Linux: apt where reliable, official release tarballs for
-# neovim, lazygit and node (apt's are missing or stale).
+# lazygit and node (apt's are missing or stale).
 # The agent CLIs (herdr, treehouse, grok, codex) use their official installers on both.
 #
 # Version policy: a new machine gets the LATEST of everything. Every pin or skip
@@ -32,7 +32,7 @@ glibc_at_least() {
 }
 
 if [ "$OS" = "Darwin" ]; then
-	for pkg in ripgrep fd fzf jq lazygit neovim node zsh zsh-autosuggestions zsh-syntax-highlighting; do
+	for pkg in ripgrep fd fzf jq lazygit node zsh zsh-autosuggestions zsh-syntax-highlighting; do
 		if brew list --versions "$pkg" >/dev/null 2>&1; then
 			echo "$pkg already installed"
 		else
@@ -66,33 +66,6 @@ else
 	if ! have fd && have fdfind; then
 		ln -sf "$(command -v fdfind)" "$LOCAL_BIN/fd"
 		echo "linked fd -> fdfind"
-	fi
-
-	# neovim: apt's build is too old, install the official release tarball.
-	# Pinned, not "latest": neovim > 0.10.x links glibc 2.32+, but Ubuntu 20.04
-	# (focal) ships glibc 2.31, so a "latest" binary installs but won't run here.
-	# v0.10.4 is the last focal-compatible release. Bump when the base OS does.
-	nvim_version="v0.10.4"
-	if have nvim; then
-		echo "neovim already installed: $(nvim --version | head -1)"
-	else
-		case "$ARCH" in
-			x86_64) nvim_asset="nvim-linux-x86_64" ;;
-			aarch64 | arm64) nvim_asset="nvim-linux-arm64" ;;
-			*) nvim_asset="" ;;
-		esac
-		if [ -z "$nvim_asset" ]; then
-			echo "skipping neovim: unsupported arch $ARCH"
-		else
-			echo "installing neovim $nvim_version from GitHub release"
-			tmp="$(mktemp -d)"
-			curl -fsSL "https://github.com/neovim/neovim/releases/download/${nvim_version}/${nvim_asset}.tar.gz" -o "$tmp/nvim.tar.gz"
-			tar -xzf "$tmp/nvim.tar.gz" -C "$tmp"
-			rm -rf "$HOME/.local/nvim"
-			mv "$tmp/${nvim_asset}" "$HOME/.local/nvim"
-			ln -sf "$HOME/.local/nvim/bin/nvim" "$LOCAL_BIN/nvim"
-			rm -rf "$tmp"
-		fi
 	fi
 
 	# lazygit: not packaged for older Ubuntu, install the release binary.
@@ -181,7 +154,7 @@ fi
 # herdr: terminal workspace manager for AI coding agents, a single binary.
 # Same installer on macOS and WSL/Linux: the brew formula builds it (and llvm/rust)
 # from source, so we use the official installer, which drops a prebuilt binary into
-# ~/.local/bin. Not pinned like neovim: herdr updates itself with `herdr update`.
+# ~/.local/bin. Not pinned: herdr updates itself with `herdr update`.
 if have herdr; then
 	echo "herdr already installed: $(herdr --version)"
 else
@@ -194,8 +167,7 @@ fi
 # Not pinned: treehouse updates itself with `treehouse update`.
 # Every upstream Linux build links GLIBC_2.34 (the release that folded libpthread
 # into libc), so on Ubuntu 20.04 (focal, glibc 2.31) none of them load, back to
-# v1.0.0. Same wall as neovim, but here no older release clears it, so skip
-# outright rather than pin. `have` only proves the file exists, and a binary the
+# v1.0.0. No older release clears it, so skip outright rather than pin. `have` only proves the file exists, and a binary the
 # loader rejects still passes it, so check that it actually runs.
 if have treehouse && treehouse --version >/dev/null 2>&1; then
 	echo "treehouse already installed: $(treehouse --version)"

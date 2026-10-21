@@ -15,7 +15,6 @@ FILES=(
 	.profile
 	.zprofile
 	.inputrc
-	.config/nvim
 	.config/herdr/config.toml
 	.claude/settings.json
 	.claude/statusline.sh

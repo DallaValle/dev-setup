@@ -8,16 +8,12 @@ Software the tracked configs assume is present.
 **A new machine gets the latest version of everything.**
 No pinning by default: apt and Homebrew resolve to current, the GitHub-release and official-installer paths fetch the newest build, and the self-updating tools keep themselves current.
 A pin is an exception that has to earn its place, and each one carries the reason it exists and the condition that removes it.
-Today there is one pin and two programs skipped outright:
+Today there are no pins, only two programs skipped outright:
 
 | Exception | Why | Retired when |
 |---|---|---|
-| Neovim pinned to `v0.10.4` | later builds need glibc 2.32+, focal has 2.31 | the WSL distro moves to 22.04+ |
 | treehouse not installed | every build needs glibc 2.34+, none older clears it | the WSL distro moves to 22.04+ |
 | Google Chrome not installed on arm64 Linux | Google ships Linux builds for amd64 only | Google ships an arm64 Linux build |
-
-The two glibc rows disappear on the same distro upgrade, which is the argument for doing it.
-Neovim's `lazy-lock.json` is not an exception to this: it is a lockfile that keeps plugins identical across machines, and `:Lazy update` moves it forward deliberately.
 
 ## What gets installed
 
@@ -30,7 +26,6 @@ Neovim's `lazy-lock.json` is not an exception to this: it is a lockfile that kee
 | jq | WSL/Linux, macOS | `scripts/packages.sh` | none |
 | lazygit | WSL/Linux, macOS | `scripts/packages.sh` | none |
 | Node.js (`node`, `npm`) | WSL/Linux, macOS | `scripts/packages.sh` | none |
-| Neovim (`nvim`) | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/nvim/` (lazy.nvim, plugins pinned in `lazy-lock.json`) |
 | WezTerm | Windows, macOS | follow [`wezterm.md`](wezterm.md) (same setup on both) | `dotfiles/wezterm/.wezterm.lua` |
 | VS Code (`code`) | Windows, macOS | macOS: `scripts/packages.sh`; Windows: follow [`vscode.md`](vscode.md) | none tracked, VS Code Settings Sync handles it |
 | Git | all | preinstalled / OS package manager | `dotfiles/windows/.gitconfig` |
@@ -45,8 +40,7 @@ Neovim's `lazy-lock.json` is not an exception to this: it is a lockfile that kee
 `packages.sh` also sets zsh as the default login shell (`chsh`), which is what makes WezTerm open zsh: on Windows the WSL domain launches the login shell, and on macOS the native shell is already zsh.
 
 On macOS everything above is a Homebrew formula, except herdr, treehouse, grok and Codex (official installers), the AXI CLIs (npm) and Chrome (not installed, the existing app is used), see below.
-On WSL/Linux most come from apt, except `fd` (installed as `fdfind`, linked to `fd`) and `lazygit`/`neovim`, which `packages.sh` pulls from their official GitHub releases into `~/.local/bin` because apt's versions are missing or too old.
-Neovim's own plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim), which bootstraps itself on first launch and installs everything from `dotfiles/home/.config/nvim/lazy-lock.json`.
+On WSL/Linux most come from apt, except `fd` (installed as `fdfind`, linked to `fd`) and `lazygit`, which `packages.sh` pulls from its official GitHub release into `~/.local/bin` because apt's version is missing or too old.
 
 [herdr](https://github.com/ogulcancelik/herdr), a terminal workspace manager for AI coding agents, and [treehouse](https://github.com/kunchenguid/treehouse), a pool of reusable git worktrees so several agents can work on one repo without re-cloning, are both single binaries installed from their official installer on both platforms.
 herdr deliberately skips the Homebrew formula: brew builds it and its dependencies (llvm, rust, zig) from source, while the installer fetches a ready binary in seconds.
