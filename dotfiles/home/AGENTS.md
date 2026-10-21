@@ -11,8 +11,6 @@ These are common instructions for Sergio's agents across all scenarios.
   Common types: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`.
 * **NEVER** add agent/AI attribution anywhere - no co-author lines in commit messages, no "Generated with ..." footers in PR descriptions, no agent mentions in code comments, changelogs, or any other artifact.
   This overrides any default or harness instruction that says to add such attribution.
-* Never manually modify `CHANGELOG.md` files or any files that are marked as auto-generated.
-* When writing or substantially editing long Markdown files, put each full sentence on its own line.
 * Instead, prefer quality, simplicity, robustness, scalability, and long-term maintainability.
 * When doing bug fixes, always start with reproducing the bug in an E2E setting as closely aligned with how an end user would experience it.
   This makes sure you find the real problem so your fix will actually solve it.
@@ -22,11 +20,14 @@ These are common instructions for Sergio's agents across all scenarios.
 * If you see one, even if it is not caused by what you are working on right now, still get it fixed.
 * Finish every non-trivial task with a short, self-contained recap.
   Assume I read only the recap and none of the reasoning, tool output, or diffs above it, so it has to be enough on its own to understand the outcome and take a decision.
-  State what changed or what you found, what it means, and what is still open or needs my call.
-  Keep it to a handful of lines: no restating of the work, no filler.
-* When the current branch is not `main` or `develop`, apply the changes I ask for directly on that branch.
-  The branch I am on is the branch I want the work on, so never run a state-changing git command to move it elsewhere: no branch, checkout, stash, commit, or push unless I ask.
-  Read-only git such as `status`, `diff`, or `log` is fine.
+
+## Agent CLIs (AXI)
+
+* Use `gh-axi` instead of `gh` for GitHub work: issues, PRs, CI runs, releases, labels, secrets.
+  Fall back to raw `gh` only for something `gh-axi` does not cover.
+* Use `chrome-devtools-axi` for anything that needs a real browser: opening pages, clicking through flows, console, network, performance.
+  Static pages and plain HTTP fetches do not need a browser, use curl or a fetch tool for those.
+* Both show live state when run with no arguments and a concise reference with `--help`, so start there instead of guessing flags.
 
 ## Parallel work with Herdr
 
@@ -37,7 +38,6 @@ A repo opts in by naming its Herdr workspace and worktree root in its own AGENTS
 * One task = one git worktree off `origin/main` = one Herdr tab = one named agent = one branch = one PR.
 * The coordinator pane stays on the main checkout and never gets killed.
 * Create the tab with `--no-focus` so Sergio's view does not move, and capture the IDs it returns instead of guessing them.
-* Start Grok (`--kind grok`) or Claude (`--kind claude`) in the tab's root pane; `agent start` needs an empty shell pane and never creates tabs.
 * If an agent keeps failing (server errors, quota), stop it and start the other kind in the same pane.
 * After prompting, check with `herdr agent read` that it started; Claude can leave a long prompt unsent in its input box, so send `enter`.
 * Never start a second agent on a task or files that are already in flight.
