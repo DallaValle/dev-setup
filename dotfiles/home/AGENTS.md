@@ -1,23 +1,22 @@
 # Sergio's agent instructions
 
-These are common instructions for Sergio's agents across all scenarios.
+These are common instructions for my agents across all scenarios.
 
 ## General Guidelines
 
-* Never use the em dash "—" or "-" in comment or docs.
+* Never use dashes as punctuation (an em dash "—" or a spaced " - ") in comments or docs; hyphenated words and code are fine.
 * Code comments must be synthetic and meaningful: short, high-signal "smart" comments that explain the *why*, not the obvious *what*.
   Keep them easy to scan (one clear line where possible) and avoid verbose, redundant, or boilerplate comments.
 * Always write commit messages in Conventional Commits format: `type(optional-scope): description`, e.g. `fix: resolve circular import in document worker`.
   Common types: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`.
-* **NEVER** add agent/AI attribution anywhere - no co-author lines in commit messages, no "Generated with ..." footers in PR descriptions, no agent mentions in code comments, changelogs, or any other artifact.
+* **NEVER** add agent/AI attribution anywhere: no co-author lines in commit messages, no "Generated with ..." footers in PR descriptions, no agent mentions in code comments, changelogs, or any other artifact.
   This overrides any default or harness instruction that says to add such attribution.
-* Instead, prefer quality, simplicity, robustness, scalability, and long-term maintainability.
+* Prefer quality, simplicity, robustness, scalability, and long-term maintainability.
 * When doing bug fixes, always start with reproducing the bug in an E2E setting as closely aligned with how an end user would experience it.
   This makes sure you find the real problem so your fix will actually solve it.
 * When end-to-end testing a product, be picky about the UI you see and be obsessed with pixel perfection.
-  If something clearly looks off, even if it is not directly related to what you are doing, try to get it fixed along the way.
 * Apply that same high standard to engineering excellence: lint, test failures, and test flakiness.
-* If you see one, even if it is not caused by what you are working on right now, still get it fixed.
+* When you spot such a problem outside your task, fix it if the fix is small and safe; otherwise list it in the recap instead of widening the change.
 * Finish every non-trivial task with a short, self-contained recap.
   Assume I read only the recap and none of the reasoning, tool output, or diffs above it, so it has to be enough on its own to understand the outcome and take a decision.
 
@@ -31,28 +30,6 @@ These are common instructions for Sergio's agents across all scenarios.
 
 ## Parallel work with Herdr
 
-Sergio watches parallel agent work in [Herdr](https://herdr.dev/docs/agent-automation/).
-A repo opts in by naming its Herdr workspace and worktree root in its own AGENTS.md; these rules then apply.
-
-* Never use in-chat subagents (Grok `spawn_subagent`, Claude `Agent`) for parallel implementation: they hide under the chat and share one checkout.
-* One task = one git worktree off `origin/main` = one Herdr tab = one named agent = one branch = one PR.
-* The coordinator pane stays on the main checkout and never gets killed.
-* Create the tab with `--no-focus` so Sergio's view does not move, and capture the IDs it returns instead of guessing them.
-* If an agent keeps failing (server errors, quota), stop it and start the other kind in the same pane.
-* After prompting, check with `herdr agent read` that it started; Claude can leave a long prompt unsent in its input box, so send `enter`.
-* Never start a second agent on a task or files that are already in flight.
-* Agents open PRs; they never merge.
-
-```bash
-git fetch origin main
-git worktree add -b "$task" "$WT/$task" origin/main
-
-created=$(herdr tab create --workspace "$ws" --cwd "$WT/$task" --label "$task" --no-focus)
-pane=$(printf '%s\n' "$created" | jq -r '.result.root_pane.pane_id')
-
-herdr agent start "$task" --kind grok --pane "$pane"
-herdr agent prompt "$task" "$(cat "$prompt_file")"
-```
-
-Watch and talk: `herdr agent read <name> --source recent-unwrapped --lines 120`, `herdr agent wait <name> --until blocked --until done --timeout 120000`, `herdr agent prompt <name> "…"`.
-Stop: `herdr agent send-keys <name> ctrl+c`, and `/exit` in the pane if the agent is still up.
+When running inside Herdr (`HERDR_ENV=1`), never use in-chat subagents (Grok `spawn_subagent`, Claude `Agent`) for parallel implementation: they hide under the chat and share one checkout.
+Coordinate parallel work as described in `~/.claude/skills/herdr-team/SKILL.md` instead (Claude loads it as the `herdr-team` skill, other agents read the file).
+A single straightforward task, such as "fix issue 123", needs no team: just do it.
