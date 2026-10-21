@@ -8,14 +8,15 @@ Software the tracked configs assume is present.
 **A new machine gets the latest version of everything.**
 No pinning by default: apt and Homebrew resolve to current, the GitHub-release and official-installer paths fetch the newest build, and the self-updating tools keep themselves current.
 A pin is an exception that has to earn its place, and each one carries the reason it exists and the condition that removes it.
-There is exactly one today, plus one program skipped outright, and both are the same cause:
+Today there is one pin and two programs skipped outright:
 
 | Exception | Why | Retired when |
 |---|---|---|
 | Neovim pinned to `v0.10.4` | later builds need glibc 2.32+, focal has 2.31 | the WSL distro moves to 22.04+ |
 | treehouse not installed | every build needs glibc 2.34+, none older clears it | the WSL distro moves to 22.04+ |
+| Google Chrome not installed on arm64 Linux | Google ships Linux builds for amd64 only | Google ships an arm64 Linux build |
 
-Both disappear on the same upgrade, which is the argument for doing it.
+The two glibc rows disappear on the same distro upgrade, which is the argument for doing it.
 Neovim's `lazy-lock.json` is not an exception to this: it is a lockfile that keeps plugins identical across machines, and `:Lazy update` moves it forward deliberately.
 
 ## What gets installed
@@ -28,6 +29,7 @@ Neovim's `lazy-lock.json` is not an exception to this: it is a lockfile that kee
 | fzf | WSL/Linux, macOS | `scripts/packages.sh` | none |
 | jq | WSL/Linux, macOS | `scripts/packages.sh` | none |
 | lazygit | WSL/Linux, macOS | `scripts/packages.sh` | none |
+| Node.js (`node`, `npm`) | WSL/Linux, macOS | `scripts/packages.sh` | none |
 | Neovim (`nvim`) | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/nvim/` (lazy.nvim, plugins pinned in `lazy-lock.json`) |
 | WezTerm | Windows, macOS | follow [`wezterm.md`](wezterm.md) (same setup on both) | `dotfiles/wezterm/.wezterm.lua` |
 | VS Code (`code`) | Windows, macOS | macOS: `scripts/packages.sh`; Windows: follow [`vscode.md`](vscode.md) | none tracked, VS Code Settings Sync handles it |
@@ -37,10 +39,12 @@ Neovim's `lazy-lock.json` is not an exception to this: it is a lockfile that kee
 | Codex (OpenAI CLI) | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.codex/config.toml`; `~/.codex/AGENTS.md` is linked to the global `dotfiles/home/AGENTS.md` |
 | herdr | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/herdr/config.toml` |
 | treehouse | WSL/Linux, macOS | `scripts/packages.sh` | none tracked yet |
+| gh-axi, chrome-devtools-axi | WSL/Linux, macOS | `scripts/packages.sh` (npm global) | none; agents are pointed at them by the global `dotfiles/home/AGENTS.md` |
+| Google Chrome | WSL/Linux | `scripts/packages.sh` (amd64 `.deb`) | none |
 
 `packages.sh` also sets zsh as the default login shell (`chsh`), which is what makes WezTerm open zsh: on Windows the WSL domain launches the login shell, and on macOS the native shell is already zsh.
 
-On macOS everything above is a Homebrew formula, except herdr, treehouse, grok and Codex (see below).
+On macOS everything above is a Homebrew formula, except herdr, treehouse, grok and Codex (official installers), the AXI CLIs (npm) and Chrome (not installed, the existing app is used), see below.
 On WSL/Linux most come from apt, except `fd` (installed as `fdfind`, linked to `fd`) and `lazygit`/`neovim`, which `packages.sh` pulls from their official GitHub releases into `~/.local/bin` because apt's versions are missing or too old.
 Neovim's own plugins are managed by [lazy.nvim](https://github.com/folke/lazy.nvim), which bootstraps itself on first launch and installs everything from `dotfiles/home/.config/nvim/lazy-lock.json`.
 
@@ -59,5 +63,15 @@ It is a checksum verified static musl binary, so it needs no Node and has no gli
 It updates itself, so `packages.sh` only bootstraps it.
 Sign in once per machine with `codex login` and pick "Sign in with ChatGPT" to use a ChatGPT Plus or Pro plan instead of API credits; the token stays in `~/.codex/auth.json` and is never tracked.
 `dotfiles/home/.codex/config.toml` configures the status line and is symlinked to `~/.codex/config.toml` by `install.sh`.
+
+Node.js comes from Homebrew on macOS and, on WSL/Linux, from the newest LTS tarball on nodejs.org, unpacked into `~/.local/node`.
+npm's global prefix stays inside that folder, so `npm install -g` needs no sudo and its bins land in `~/.local/node/bin`, which `.zshrc` puts ahead of the Windows npm that WSL interop exposes.
+LTS is a release channel, not a pin: a fresh install always gets the newest one.
+
+[AXI](https://github.com/kunchenguid/axi) is a set of design principles for agent first CLIs: compact TOON output, live state when run with no arguments, next step hints.
+`packages.sh` installs the two official ones as npm globals, `gh-axi` (wraps `gh`, so `gh auth login` still applies) and `chrome-devtools-axi` (wraps chrome-devtools-mcp and drives a headless Chrome).
+Both upgrade themselves with `<name> update`.
+WSL has no browser of its own, so on Linux `packages.sh` also installs `google-chrome-stable` from Google's `.deb`, which registers Google's apt repo and keeps it current through apt; on macOS it uses the Chrome already installed.
+Their optional `setup hooks` session hooks and `npx skills` stubs are deliberately not installed: the global `AGENTS.md` already tells agents to use them, at no per session token cost.
 
 VS Code is a GUI app, installed once per host and never inside WSL: Homebrew cask on macOS, `winget` on the Windows host where WSL reaches it through PATH interop, see [`vscode.md`](vscode.md).

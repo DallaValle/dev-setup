@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Symlinks tracked files from home/ into $HOME.
+# Symlinks tracked files from dotfiles/home/ into $HOME.
 # Safe to re-run: adopts real files on first run, backs up anything
 # unexpected on later runs, and skips files already linked correctly.
 set -euo pipefail
@@ -20,6 +20,8 @@ FILES=(
 	.claude/settings.json
 	.claude/statusline.sh
 	.claude/agents
+	.claude/skills/herdr
+	.claude/skills/herdr-team
 	.codex/config.toml
 	.grok/config.toml
 	AGENTS.md

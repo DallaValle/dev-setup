@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 # Installs the CLI tools the tracked configs assume are present.
 # Safe to re-run: each step skips itself if already satisfied.
-# macOS: Homebrew. WSL/Linux: apt where reliable, official GitHub release
-# binaries for neovim and lazygit (apt's are missing or stale).
-# herdr is installed the same way on both, via its official installer.
+# macOS: Homebrew. WSL/Linux: apt where reliable, official release tarballs for
+# neovim, lazygit and node (apt's are missing or stale).
+# The agent CLIs (herdr, treehouse, grok, codex) use their official installers on both.
 #
-# Version policy: a new machine gets the LATEST of everything. Every pin below
-# is a documented exception with a stated reason and a condition that retires
-# it, never a default. Today the only one is neovim on Ubuntu 20.04.
+# Version policy: a new machine gets the LATEST of everything. Every pin or skip
+# below is an exception recorded in programs/programs.md, never a default.
 set -euo pipefail
 
 OS="$(uname -s)"
@@ -33,7 +32,7 @@ glibc_at_least() {
 }
 
 if [ "$OS" = "Darwin" ]; then
-	for pkg in ripgrep fd fzf jq lazygit neovim zsh zsh-autosuggestions zsh-syntax-highlighting; do
+	for pkg in ripgrep fd fzf jq lazygit neovim node zsh zsh-autosuggestions zsh-syntax-highlighting; do
 		if brew list --versions "$pkg" >/dev/null 2>&1; then
 			echo "$pkg already installed"
 		else
@@ -117,6 +116,66 @@ else
 			rm -rf "$tmp"
 		fi
 	fi
+
+	# node: apt's is stale, install the newest LTS tarball into ~/.local/node.
+	# The Windows npm leaks in through interop, so test the Linux node binary itself.
+	# npm's global prefix is ~/.local/node too, so `npm i -g` bins land on the PATH
+	# entry .zshrc adds, with no sudo and no ~/.npmrc.
+	if [ -x "$HOME/.local/node/bin/node" ]; then
+		echo "node already installed: $("$HOME/.local/node/bin/node" --version)"
+	else
+		case "$ARCH" in
+			x86_64) node_arch="x64" ;;
+			aarch64 | arm64) node_arch="arm64" ;;
+			*) node_arch="" ;;
+		esac
+		if [ -z "$node_arch" ]; then
+			echo "skipping node: unsupported arch $ARCH"
+		else
+			ver="$(curl -fsSL https://nodejs.org/dist/index.json | jq -r '[.[] | select(.lts)][0].version')"
+			echo "installing node $ver (latest LTS) from nodejs.org"
+			tmp="$(mktemp -d)"
+			curl -fsSL "https://nodejs.org/dist/${ver}/node-${ver}-linux-${node_arch}.tar.gz" -o "$tmp/node.tar.gz"
+			tar -xzf "$tmp/node.tar.gz" -C "$tmp"
+			rm -rf "$HOME/.local/node"
+			mv "$tmp/node-${ver}-linux-${node_arch}" "$HOME/.local/node"
+			rm -rf "$tmp"
+		fi
+	fi
+	export PATH="$HOME/.local/node/bin:$PATH"
+
+	# Chrome for chrome-devtools-axi: WSL has none and cannot drive the Windows one
+	# reliably. Installing the .deb through apt pulls its shared libs and adds
+	# Google's apt repo, so later apt upgrades keep it current.
+	if have google-chrome-stable; then
+		echo "chrome already installed: $(google-chrome-stable --version)"
+	elif [ "$(dpkg --print-architecture 2>/dev/null)" != amd64 ]; then
+		echo "skipping chrome: Google ships Linux builds for amd64 only"
+	else
+		echo "installing google-chrome-stable from dl.google.com"
+		tmp="$(mktemp -d)"
+		curl -fsSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o "$tmp/chrome.deb"
+		sudo apt-get install -y "$tmp/chrome.deb"
+		rm -rf "$tmp"
+	fi
+fi
+
+# AXI CLIs (see programs/programs.md): token-efficient, agent-first wrappers the
+# global AGENTS.md points agents at. gh-axi wraps gh, chrome-devtools-axi wraps
+# chrome-devtools-mcp. Not pinned: both upgrade with `<name> update`.
+# A Windows npm reached through WSL interop would install into the Windows profile.
+npm_path="$(command -v npm || true)"
+if [ -z "$npm_path" ] || [[ "$npm_path" == /mnt/* ]]; then
+	echo "skipping AXI CLIs: no native npm found"
+else
+	for pkg in gh-axi chrome-devtools-axi; do
+		if have "$pkg"; then
+			echo "$pkg already installed"
+		else
+			echo "installing $pkg via npm"
+			npm install -g "$pkg"
+		fi
+	done
 fi
 
 # herdr: terminal workspace manager for AI coding agents, a single binary.

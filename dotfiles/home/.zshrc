@@ -16,6 +16,8 @@ setopt HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE INC_APPEND_HISTORY
 typeset -U path
 [[ -d $HOME/bin ]] && path=("$HOME/bin" $path)
 [[ -d $HOME/.local/bin ]] && path=("$HOME/.local/bin" $path)
+# Linux node and its npm global bins, ahead of the Windows npm that interop exposes
+[[ -d $HOME/.local/node/bin ]] && path=("$HOME/.local/node/bin" $path)
 
 # --- Completion: case-insensitive + substring matching ---
 # First match in fpath wins, so user-local completions shadow broken vendor ones
