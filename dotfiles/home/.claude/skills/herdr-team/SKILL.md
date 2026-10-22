@@ -24,7 +24,7 @@ If the split is unclear (one task or several, which files each owns), ask the us
 ## Preconditions
 
 * Check `test "${HERDR_ENV:-}" = 1`. If it fails, tell the user you are not inside Herdr and fall back to the built in sub agent tool.
-* Inside Herdr, never use in chat subagents (Grok `spawn_subagent`, Claude `Agent`) for implementation: they hide under the chat and share one checkout.
+* Inside Herdr, never use in chat subagents (Claude `Agent`, Codex subagents) for implementation: they hide under the chat and share one checkout.
   Your own quick read only lookups may still use them.
 * The workspace (`$ws`) is `$HERDR_WORKSPACE_ID` and the worktree root (`$WT`) is a sibling folder `../<repo>-worktrees`.
   A repo's AGENTS.md may override either.
@@ -58,14 +58,13 @@ herdr agent start "$task" --kind <kind> --pane "$pane" --timeout 120000 -- <mode
 ```
 
 * `--no-focus` keeps the user's view where it is; always read IDs from the returned JSON, never guess them.
-* `<kind>`: your own kind (`claude` or `grok`) by default.
-  Use `codex` for any task that needs images or visual design: mockups, assets, icons, UI built from a design.
-  Use another kind when the user asks for it.
-* `<mode args>` reproduce your own permission mode, so agents are never more or less trusted than you.
-  For Claude Code that is `--permission-mode <mode>` with `default`, `acceptEdits`, `plan`, `auto` or `bypassPermissions`.
-  For another kind, use its equivalent flag, and ask the user if you do not know it.
+* `<kind>`: `claude` (the `cc` alias) or `codex` (the `cx` alias), your own kind by default.
+  Any task involving images always goes to `codex`: generation, editing, mockups, assets, icons, UI built from a design.
+  Grok is not used for now: never start it.
+* `<mode args>` are always the auto mode flags of those aliases, since `agent start` runs the bare binary and never expands aliases:
+  `--dangerously-skip-permissions` for `claude`, `--dangerously-bypass-approvals-and-sandbox` for `codex`.
 * On `timeout`, read the pane: if it is back at the shell prompt, retry once.
-* If an agent keeps failing (server errors, quota), stop it and start a different kind in the same pane.
+* If an agent keeps failing (server errors, quota), stop it and start the other kind in the same pane, unless the task involves images.
 
 ## Hand out the work
 

@@ -57,7 +57,7 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# Claude Code in auto mode (no permission prompts)
+# Claude Code and Codex in auto mode (no permission prompts)
 alias cc="claude --dangerously-skip-permissions"
 alias cx="codex --dangerously-bypass-approvals-and-sandbox"
 

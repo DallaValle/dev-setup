@@ -30,6 +30,9 @@ These are common instructions for my agents across all scenarios.
 
 ## Parallel work with Herdr
 
-When running inside Herdr (`HERDR_ENV=1`), never use in-chat subagents (Grok `spawn_subagent`, Claude `Agent`) for parallel implementation: they hide under the chat and share one checkout.
+When running inside Herdr (`HERDR_ENV=1`), never use in-chat subagents (Claude `Agent`, Codex subagents) for parallel implementation: they hide under the chat and share one checkout.
 Coordinate parallel work as described in `~/.claude/skills/herdr-team/SKILL.md` instead (Claude loads it as the `herdr-team` skill, other agents read the file).
 A single straightforward task, such as "fix issue 123", needs no team: just do it.
+The coordinator only starts Claude Code or Codex, always in auto mode, with the same flags as the `cc` and `cx` shell aliases.
+Any task involving images always goes to Codex (`cx`).
+Grok is not used for now: never start it.
