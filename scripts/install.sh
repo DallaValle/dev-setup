@@ -21,7 +21,6 @@ FILES=(
 	.claude/agents
 	.claude/skills/herdr
 	.claude/skills/herdr-team
-	.codex/config.toml
 	.grok/config.toml
 	AGENTS.md
 )

@@ -31,7 +31,7 @@ Today there are no pins, only two programs skipped outright:
 | Git | all | preinstalled / OS package manager | `dotfiles/windows/.gitconfig` |
 | Claude Code | all | see docs.claude.com | `dotfiles/home/.claude/`, subagents in [`../agents/`](../agents/README.md) |
 | grok (xAI CLI) | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.grok/config.toml`; `~/.grok/AGENTS.md` is also linked to the global `dotfiles/home/AGENTS.md` |
-| Codex (OpenAI CLI) | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.codex/config.toml`; `~/.codex/AGENTS.md` is linked to the global `dotfiles/home/AGENTS.md` |
+| Codex (OpenAI CLI) | WSL/Linux, macOS | `scripts/packages.sh` | `~/.codex/config.toml` stays machine local (not tracked); `~/.codex/AGENTS.md` is linked to the global `dotfiles/home/AGENTS.md` |
 | herdr | WSL/Linux, macOS | `scripts/packages.sh` | `dotfiles/home/.config/herdr/config.toml` |
 | treehouse | WSL/Linux, macOS | `scripts/packages.sh` | none tracked yet |
 | gh-axi, chrome-devtools-axi | WSL/Linux, macOS | `scripts/packages.sh` (npm global) | none; agents are pointed at them by the global `dotfiles/home/AGENTS.md` |
@@ -56,7 +56,7 @@ Config lives at `dotfiles/home/.grok/config.toml` and is symlinked to `~/.grok/c
 It is a checksum verified static musl binary, so it needs no Node and has no glibc floor, and it lands in `~/.local/bin`, already on PATH, so the installer never edits the tracked `.zshrc`.
 It updates itself, so `packages.sh` only bootstraps it.
 Sign in once per machine with `codex login` and pick "Sign in with ChatGPT" to use a ChatGPT Plus or Pro plan instead of API credits; the token stays in `~/.codex/auth.json` and is never tracked.
-`dotfiles/home/.codex/config.toml` configures the status line and is symlinked to `~/.codex/config.toml` by `install.sh`.
+`~/.codex/config.toml` is deliberately not tracked: Codex writes MCP OAuth client secrets into it, so it stays a plain file on each machine.
 
 Node.js comes from Homebrew on macOS and, on WSL/Linux, from the newest LTS tarball on nodejs.org, unpacked into `~/.local/node`.
 npm's global prefix stays inside that folder, so `npm install -g` needs no sudo and its bins land in `~/.local/node/bin`, which `.zshrc` puts ahead of the Windows npm that WSL interop exposes.
