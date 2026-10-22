@@ -6,9 +6,16 @@ set -uo pipefail
 
 input=$(cat)
 
-# One field per line: mapfile keeps blank lines, so an absent value stays in
-# its slot. Splitting on tabs would not - bash collapses runs of whitespace.
-mapfile -t f < <(
+# One field per line, one read each, so an absent value stays an empty slot.
+# Not tabs (bash collapses whitespace runs) and not mapfile (macOS ships bash 3.2).
+{
+	IFS= read -r model
+	IFS= read -r dir
+	IFS= read -r ctx
+	IFS= read -r five
+	IFS= read -r week
+	IFS= read -r cost
+} < <(
 	printf '%s' "$input" | jq -r '
 		def pct: if . == null then "" else (floor | tostring) end;
 		[ .model.display_name // "?"
@@ -20,7 +27,7 @@ mapfile -t f < <(
 		] | .[]'
 )
 
-model=${f[0]:-?} dir=${f[1]-} ctx=${f[2]-} five=${f[3]-} week=${f[4]-} cost=${f[5]:-0}
+model=${model:-?} cost=${cost:-0}
 
 # Base ANSI colors, not a 256-colour ramp, so the bar follows the terminal
 # theme the way the dark-ansi Claude theme does.
