@@ -40,6 +40,7 @@ Hence the order: programs first, then their configs.
 - `packages.sh` may set zsh as the default shell and prompt for a password. Shell and program changes only take effect in a new terminal or after `source ~/.zshrc`.
 - For a new Mac, `scripts/bootstrap.sh` handles Homebrew, both sync scripts, a backed-up WezTerm config copy and installation checks. Start with the steps before cloning in `README.md`. `scripts/check.sh` is read-only and does not verify account sign-ins or app permissions.
 - `packages.sh` installs WezTerm on macOS. `bootstrap.sh` copies its config; when running the sync scripts separately, follow `programs/wezterm.md` for that step and Windows installation.
+- Never launch `herdr` from an agent's tool shell. Its server outlives the agent and passes the agent's sandbox environment (`NO_COLOR=1`, pager overrides) to every pane, so all colors vanish until `herdr server stop` is run from a plain WezTerm shell.
 - `dotfiles/windows/` is applied manually on the Windows host, since `install.sh` runs inside WSL and cannot write the Windows profile.
 
 ## Shared skills and settings

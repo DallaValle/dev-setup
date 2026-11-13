@@ -20,6 +20,10 @@ Copy-Item "dotfiles\wezterm\.wezterm.lua" "$env:USERPROFILE\.wezterm.lua" -Force
 cp dotfiles/wezterm/.wezterm.lua ~/.wezterm.lua
 ```
 
+`Cmd+V` pastes text normally. When the clipboard offers a PNG or TIFF image, it sends `Ctrl+V` so an application with clipboard image support can attach it. This requires the application to run locally and support that shortcut. `Ctrl+Shift+V` remains available for terminal text paste.
+
+The font is JetBrains Mono, bundled with WezTerm, so no separate font installation is needed. It is 14pt on macOS and 11pt on Windows, because macOS renders points smaller.
+
 ## What is shared vs per-OS
 
 - Shared: shell (zsh), color scheme, font stack, window/tab-bar look, scrollback, pane split/nav keys, launcher (`Ctrl+Shift+L`).

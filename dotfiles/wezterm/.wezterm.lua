@@ -8,13 +8,10 @@ local is_mac = triple:find("darwin") ~= nil
 
 -- Appearance (shared on every OS)
 config.color_scheme = "Catppuccin Mocha"
-config.font = wezterm.font_with_fallback({
-	"Cascadia Code",
-	"JetBrains Mono",
-	"Menlo",
-	"Consolas",
-})
-config.font_size = 11.0
+-- The bundled font keeps fresh installs independent of system fonts.
+config.font = wezterm.font("JetBrains Mono")
+-- macOS sizes points at 72 dpi, so the same size reads smaller than on Windows.
+config.font_size = is_mac and 14.0 or 11.0
 config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 config.window_padding = { left = 8, right = 8, top = 8, bottom = 8 }
 
@@ -71,6 +68,19 @@ if is_windows then
 		action = act.SpawnCommandInNewTab({ domain = { DomainName = "WSL:Ubuntu-24.04" } }),
 	})
 elseif is_mac then
+	-- Image attachments need the application's paste shortcut, not terminal text paste.
+	table.insert(config.keys, {
+		key = "v",
+		mods = "CMD",
+		action = wezterm.action_callback(function(window, pane)
+			local ok, info = wezterm.run_child_process({ "/usr/bin/osascript", "-e", "clipboard info" })
+			local has_image = ok and (info:find("PNGf", 1, true) or info:find("TIFF", 1, true))
+			window:perform_action(
+				has_image and act.SendKey({ key = "v", mods = "CTRL" }) or act.PasteFrom("Clipboard"),
+				pane
+			)
+		end),
+	})
 	config.default_cwd = wezterm.home_dir
 	config.launch_menu = {
 		{ label = "zsh", args = { "/bin/zsh", "-l" } },
