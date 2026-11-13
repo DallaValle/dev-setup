@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Installs the CLI tools the tracked configs assume are present.
+# Installs the programs the tracked configs assume are present.
 # Safe to re-run: each step skips itself if already satisfied.
 # macOS: Homebrew. WSL/Linux: apt where reliable, official release tarballs for
 # lazygit and node (apt's are missing or stale).
-# The agent CLIs (herdr, treehouse, grok, codex) use their official installers on both.
+# herdr, treehouse, Codex and Claude Code use their official installers on both.
 #
 # Version policy: a new machine gets the LATEST of everything. Every pin or skip
 # below is an exception recorded in programs/programs.md, never a default.
@@ -12,6 +12,8 @@ set -euo pipefail
 OS="$(uname -s)"
 ARCH="$(uname -m)"
 LOCAL_BIN="$HOME/.local/bin"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PATH="$LOCAL_BIN:$PATH"
 
 have() { command -v "$1" >/dev/null 2>&1; }
 
@@ -32,13 +34,34 @@ glibc_at_least() {
 }
 
 if [ "$OS" = "Darwin" ]; then
-	for pkg in ripgrep fd fzf jq lazygit node zsh zsh-autosuggestions zsh-syntax-highlighting; do
+	# shellcheck source=scripts/lib/macos.sh
+	source "$REPO_DIR/scripts/lib/macos.sh"
+	if ! load_homebrew; then
+		echo "Homebrew is missing. Run ./scripts/bootstrap.sh on macOS." >&2
+		exit 1
+	fi
+	for pkg in git gh ripgrep fd fzf jq lazygit node zsh zsh-autosuggestions zsh-syntax-highlighting; do
 		if brew list --versions "$pkg" >/dev/null 2>&1; then
 			echo "$pkg already installed"
 		else
 			echo "installing $pkg via Homebrew"
 			brew install "$pkg"
 		fi
+	done
+
+	install_macos_app() {
+		local cask="$1" app="$2"
+		# Recognize manual installs so Homebrew does not collide with an existing app.
+		if [ -d "/Applications/$app.app" ] || [ -d "$HOME/Applications/$app.app" ]; then
+			echo "$app already installed"
+		else
+			echo "installing $app via Homebrew cask"
+			brew install --cask "$cask"
+		fi
+	}
+
+	for app in "${MACOS_APPS[@]}"; do
+		install_macos_app "${app%%:*}" "${app#*:}"
 	done
 else
 	mkdir -p "$LOCAL_BIN"
@@ -181,18 +204,6 @@ else
 	curl -fsSL https://kunchenguid.github.io/treehouse/install.sh | sh
 fi
 
-# grok: xAI's agentic coding CLI, installed via its official installer into
-# ~/.grok/bin (it also symlinks into ~/.local/bin). The installer appends its own
-# PATH/completions block to .zshrc, which is a symlink into this repo, so it edits
-# the tracked .zshrc directly. That block is already committed, and the installer
-# replaces it in place rather than duplicating, so re-running is safe.
-if have grok; then
-	echo "grok already installed: $(grok --version)"
-else
-	echo "installing grok from x.ai/cli/install.sh"
-	curl -fsSL https://x.ai/cli/install.sh | bash
-fi
-
 # codex: OpenAI's agentic coding CLI, signs in with a ChatGPT plan via `codex login`.
 # Official installer on both platforms: a checksum verified static binary into
 # ~/.local/bin, so no Node and no glibc floor. ~/.local/bin is already on PATH,
@@ -205,6 +216,14 @@ else
 	curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
 fi
 
+# Native installation keeps Claude Code current without a Node dependency.
+if have claude; then
+	echo "Claude Code already installed: $(claude --version)"
+else
+	echo "installing Claude Code from claude.ai/install.sh"
+	curl -fsSL https://claude.ai/install.sh | bash -s -- latest
+fi
+
 # VS Code: a GUI app, so it is installed per host, not per shell.
 # On macOS the cask provides both the app and the `code` CLI. On WSL the editor
 # lives on the Windows host and `code` reaches the distro through PATH interop
@@ -212,11 +231,9 @@ fi
 vscode_app="/Applications/Visual Studio Code.app"
 vscode_cli="$vscode_app/Contents/Resources/app/bin/code"
 if [ "$OS" = "Darwin" ]; then
-	if [ -d "$vscode_app" ]; then
-		echo "VS Code already installed"
-	else
-		echo "installing VS Code via Homebrew cask"
-		brew install --cask visual-studio-code
+	if [ ! -d "$vscode_app" ] && [ -d "$HOME/Applications/Visual Studio Code.app" ]; then
+		vscode_app="$HOME/Applications/Visual Studio Code.app"
+		vscode_cli="$vscode_app/Contents/Resources/app/bin/code"
 	fi
 
 	# Link the CLI ourselves instead of trusting the cask's binary symlink: the app
@@ -260,4 +277,4 @@ if have zsh; then
 fi
 
 echo
-echo "WezTerm is not handled here, follow programs/wezterm.md to install and configure it on Windows and macOS."
+echo "For WezTerm's config copy step and Windows installation, follow programs/wezterm.md."

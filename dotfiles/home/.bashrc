@@ -8,6 +8,12 @@ case $- in
       *) return;;
 esac
 
+# Keep native tools ahead of Windows interop without replacing the inherited PATH.
+for bin_dir in "$HOME/bin" "$HOME/.local/bin" "$HOME/.local/node/bin"; do
+    [ ! -d "$bin_dir" ] || PATH="$bin_dir:$PATH"
+done
+export PATH
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -120,14 +126,18 @@ fi
 _cd_substring_complete() {
     local cur="${COMP_WORDS[COMP_CWORD]}"
     local matches=()
-    local d
+    local d nocasematch_enabled=0
+    shopt -q nocasematch && nocasematch_enabled=1
+    shopt -s nocasematch
     for d in */ ; do
+        [ -d "$d" ] || continue
         d="${d%/}"
-        if [[ "${d,,}" == *"${cur,,}"* ]]; then
+        if [[ "$d" == *"$cur"* ]]; then
             matches+=("$d")
         fi
     done
     COMPREPLY=("${matches[@]}")
+    [ "$nocasematch_enabled" = 1 ] || shopt -u nocasematch
 }
 complete -F _cd_substring_complete cd
 
@@ -179,7 +189,6 @@ PS1='\[\e[1;34m\]\w\[\e[0m\]$(__git_prompt)\[\e[0m\] \$ '
 PS1="\[\e]0;\u@\h: \w\a\]$PS1"
 # --- WSL-only: Windows interop (skipped on mac/Linux) ---
 if [ -n "${WSL_DISTRO_NAME-}" ]; then
-    export PATH="/home/sergiodallavalle/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Users/SergioDallaValle/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/local/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Program Files/Git/mingw64/bin:/mnt/c/Program Files/Git/usr/bin:/mnt/c/Users/SergioDallaValle/bin:/mnt/c/Program Files/PowerShell/7:/mnt/c/Program Files/Microsoft SDKs/Azure/CLI2/wbin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/dotnet:/mnt/c/Program Files/GitExtensions:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/DTS/Binn:/mnt/c/Program Files/OpenSSL-Win64/bin:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/WINDOWS/System32:/mnt/c/Program Files/Sql Server Extension:/mnt/c/Program Files/Microsoft/Web Platform Installer:/mnt/c/Program Files/PyManager:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/Program Files/PowerShell/7:/mnt/c/Program Files/WezTerm:/mnt/c/Program Files/PowerShell/7:/mnt/c/Users/SergioDallaValle/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand:/mnt/c/Users/SergioDallaValle/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/copilotCli:/mnt/c/Users/SergioDallaValle/AppData/Local/Programs/Microsoft VS Code:/mnt/c/Program Files/Microsoft SDKs/Azure/CLI2/wbin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/dotnet:/mnt/c/Program Files/GitExtensions:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/DTS/Binn:/mnt/c/Program Files/OpenSSL-Win64/bin:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/WINDOWS/System32:/mnt/c/Program Files/Sql Server Extension:/mnt/c/Program Files/Microsoft/Web Platform Installer:/mnt/c/Program Files/PyManager:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/Program Files/PowerShell/7:/mnt/c/Program Files/Microsoft SDKs/Azure/CLI2/wbin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/dotnet:/mnt/c/Program Files/GitExtensions:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/nodejs:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/160/DTS/Binn:/mnt/c/Program Files/OpenSSL-Win64/bin:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/WINDOWS/System32:/mnt/c/Program Files/Sql Server Extension:/mnt/c/Program Files/Microsoft/Web Platform Installer:/mnt/c/Program Files/PyManager:/mnt/c/Program Files/Microsoft VS Code/bin:/mnt/c/Program Files/PowerShell/7:/mnt/c/Users/SergioDallaValle/AppData/Local/bun:/mnt/c/Users/SergioDallaValle/AppData/Local/bun:/mnt/c/Users/SergioDallaValle/AppData/Local/Programs/oh-my-posh/bin:/mnt/c/Users/SergioDallaValle/AppData/Roaming/Python/Scripts:/mnt/c/Users/SergioDallaValle/AppData/Local/AnthropicClaude:/mnt/c/Users/SergioDallaValle/AppData/Local/Programs/oh-my-posh/bin:/mnt/c/Users/SergioDallaValle/AppData/Roaming/Python/Scripts:/mnt/c/Users/SergioDallaValle/AppData/Local/Microsoft/WinGet/Packages/Anthropic.ClaudeCode_Microsoft.Winget.Source_8wekyb3d8bbwe:/mnt/c/Users/SergioDallaValle/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/SergioDallaValle/.dotnet/tools:/mnt/c/Program Files/Git/usr/bin/vendor_perl:/mnt/c/Program Files/Git/usr/bin/core_perl"
     # Use Windows git on /mnt/c (much faster than Linux git on DrvFs)
     alias git=git.exe
 fi
@@ -188,6 +197,3 @@ fi
 # Claude Code and Codex in auto mode (no permission prompts)
 alias cc="claude --dangerously-skip-permissions"
 alias cx="codex --dangerously-bypass-approvals-and-sandbox"
-
-# grok in auto mode (no permission prompts)
-alias gg="grok --always-approve"

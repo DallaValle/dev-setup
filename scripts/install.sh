@@ -8,38 +8,8 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SRC_DIR="$REPO_DIR/dotfiles/home"
 BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 
-FILES=(
-	.bashrc
-	.zshrc
-	.zshenv
-	.profile
-	.zprofile
-	.inputrc
-	.config/herdr/config.toml
-	.claude/settings.json
-	.claude/statusline.sh
-	.claude/agents
-	.claude/skills/herdr
-	.claude/skills/herdr-team
-	.grok/config.toml
-	AGENTS.md
-)
-
-# Extra links onto a file already tracked above, so one canonical file serves
-# several tools. Format: "<dest under $HOME> <source under dotfiles/home>".
-# AGENTS.md is the rule set every agent reads; each entry here is only the name
-# that agent insists on:
-#   - Claude Code reads CLAUDE.md and never AGENTS.md, and ~/.claude/CLAUDE.md
-#     is its one user-level location.
-#   - grok looks only in ~/.grok/ for global rules, matching Agents.md,
-#     Claude.md, AGENT.md or AGENTS.md. The spelling matters on WSL, whose
-#     filesystem is case-sensitive, so an all-caps CLAUDE.md would go unread.
-#   - codex reads global rules only from ~/.codex/AGENTS.md (or $CODEX_HOME).
-ALIASES=(
-	".claude/CLAUDE.md AGENTS.md"
-	".grok/AGENTS.md AGENTS.md"
-	".codex/AGENTS.md AGENTS.md"
-)
+# shellcheck source=scripts/lib/dotfiles.sh
+source "$REPO_DIR/scripts/lib/dotfiles.sh"
 
 # Link $2 (under dotfiles/home) to $1 (under $HOME), reporting it as $1.
 link() {
@@ -77,11 +47,20 @@ link() {
 	echo "linked: $rel"
 }
 
-for rel in "${FILES[@]}"; do
+for rel in "${DOTFILES[@]}"; do
 	link "$rel" "$rel"
 done
 
-for entry in "${ALIASES[@]}"; do
+for entry in "${DOTFILE_ALIASES[@]}"; do
 	read -r dst_rel src_rel <<<"$entry"
 	link "$dst_rel" "$src_rel"
+done
+
+# Keep manually installed skills identical across providers.
+for skill in "$SRC_DIR/.agents/skills"/*/; do
+	[ -f "${skill}SKILL.md" ] || continue
+	name="$(basename "$skill")"
+	for provider in "${SKILL_PROVIDERS[@]}"; do
+		link "$provider/skills/$name" ".agents/skills/$name"
+	done
 done

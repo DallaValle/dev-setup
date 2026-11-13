@@ -17,8 +17,10 @@ These are common instructions for my agents across all scenarios.
 * When end-to-end testing a product, be picky about the UI you see and be obsessed with pixel perfection.
 * Apply that same high standard to engineering excellence: lint, test failures, and test flakiness.
 * When you spot such a problem outside your task, fix it if the fix is small and safe; otherwise list it in the recap instead of widening the change.
-* Finish every non-trivial task with a short, self-contained recap.
-  Assume I read only the recap and none of the reasoning, tool output, or diffs above it, so it has to be enough on its own to understand the outcome and take a decision.
+* Be synthetic
+* Any task involving images always goes to Codex (`cx`).
+* The coordinator only starts Claude Code or Codex, always in auto mode, with the same flags as the `cc` and `cx` shell aliases.
+* Coordinate parallel work as described in `~/.claude/skills/herdr-team/SKILL.md` instead (Claude loads it as the `herdr-team` skill, other agents read the file).
 
 ## Agent CLIs (AXI)
 
@@ -27,12 +29,3 @@ These are common instructions for my agents across all scenarios.
 * Use `chrome-devtools-axi` for anything that needs a real browser: opening pages, clicking through flows, console, network, performance.
   Static pages and plain HTTP fetches do not need a browser, use curl or a fetch tool for those.
 * Both show live state when run with no arguments and a concise reference with `--help`, so start there instead of guessing flags.
-
-## Parallel work with Herdr
-
-When running inside Herdr (`HERDR_ENV=1`), never use in-chat subagents (Claude `Agent`, Codex subagents) for parallel implementation: they hide under the chat and share one checkout.
-Coordinate parallel work as described in `~/.claude/skills/herdr-team/SKILL.md` instead (Claude loads it as the `herdr-team` skill, other agents read the file).
-A single straightforward task, such as "fix issue 123", needs no team: just do it.
-The coordinator only starts Claude Code or Codex, always in auto mode, with the same flags as the `cc` and `cx` shell aliases.
-Any task involving images always goes to Codex (`cx`).
-Grok is not used for now: never start it.

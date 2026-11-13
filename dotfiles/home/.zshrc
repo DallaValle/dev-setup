@@ -61,9 +61,6 @@ alias l='ls -CF'
 alias cc="claude --dangerously-skip-permissions"
 alias cx="codex --dangerously-bypass-approvals-and-sandbox"
 
-# grok in auto mode (no permission prompts)
-alias gg="grok --always-approve"
-
 # --- WSL-only: use Windows git on /mnt/c (much faster than Linux git on DrvFs) ---
 if [[ -n ${WSL_DISTRO_NAME-} ]]; then
 	alias git=git.exe
@@ -138,9 +135,7 @@ for p in \
 	[[ -r $p ]] && { source "$p"; break; }
 done
 
-# >>> grok installer >>>
-export PATH="$HOME/.grok/bin:$PATH"
-fpath=(~/.grok/completions/zsh $fpath)
-autoload -Uz compinit && compinit -C
-# <<< grok installer <<<
-[ -z "$SSH_AUTH_SOCK" ] && eval "$(ssh-agent -s)" >/dev/null && ssh-add -q ~/.ssh/id_github 2>/dev/null
+if [[ -z ${SSH_AUTH_SOCK-} && -f $HOME/.ssh/id_github ]]; then
+	eval "$(ssh-agent -s)" >/dev/null
+	ssh-add -q "$HOME/.ssh/id_github" 2>/dev/null
+fi

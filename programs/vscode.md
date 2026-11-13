@@ -11,7 +11,7 @@ Handled by `scripts/packages.sh`:
 brew install --cask visual-studio-code
 ```
 
-The script skips the install when `/Applications/Visual Studio Code.app` already exists, which covers an app that was drag-installed outside Homebrew.
+The script skips the install when Visual Studio Code already exists in `/Applications` or `~/Applications`, including manual installations.
 It then symlinks the CLI bundled in the app into `~/.local/bin/code`:
 
 ```sh

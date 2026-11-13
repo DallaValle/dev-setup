@@ -1,2 +1,5 @@
 # Machine local: holds an OAuth client secret
 dotfiles/home/.codex/config.toml
+
+# Python test bytecode is local runtime output.
+__pycache__/

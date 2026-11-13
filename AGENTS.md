@@ -38,5 +38,12 @@ Hence the order: programs first, then their configs.
 - `dotfiles/home/.grok/config.toml` is symlinked to `~/.grok/config.toml` the same way.
   Grok may also rewrite marketplace flags there; treat pure runtime churn the same as Claude's settings noise.
 - `packages.sh` may set zsh as the default shell and prompt for a password. Shell and program changes only take effect in a new terminal or after `source ~/.zshrc`.
-- WezTerm is not handled by either script. Follow `programs/wezterm.md` to install and configure it by hand on Windows and macOS.
+- For a new Mac, `scripts/bootstrap.sh` handles Homebrew, both sync scripts, a backed-up WezTerm config copy and installation checks. Start with the steps before cloning in `README.md`. `scripts/check.sh` is read-only and does not verify account sign-ins or app permissions.
+- `packages.sh` installs WezTerm on macOS. `bootstrap.sh` copies its config; when running the sync scripts separately, follow `programs/wezterm.md` for that step and Windows installation.
 - `dotfiles/windows/` is applied manually on the Windows host, since `install.sh` runs inside WSL and cannot write the Windows profile.
+
+## Shared skills and settings
+
+Keep manually installed skills in `dotfiles/home/.agents/skills/<name>/` and run `./scripts/install.sh` to expose every skill to Claude Code, Codex and Grok. Never install a custom skill only into one provider's home directory. Provider-managed bundled skills, plugins and account-synced skills retain their own lifecycle and may require provider-specific tools.
+
+Keep provider settings in `dotfiles/home/` and add their paths to `scripts/install.sh`. Codex's `config.toml` is stored here locally and ignored by Git because it contains an OAuth secret. Never commit its contents.

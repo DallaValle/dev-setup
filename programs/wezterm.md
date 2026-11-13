@@ -14,8 +14,9 @@ Copy-Item "dotfiles\wezterm\.wezterm.lua" "$env:USERPROFILE\.wezterm.lua" -Force
 
 ## macOS
 
+`scripts/packages.sh` installs the app automatically, skipping an existing installation. `scripts/bootstrap.sh` also copies the config, backing up a differing local file first. When running only the package and config sync scripts, copy the config yourself:
+
 ```sh
-brew install --cask wezterm
 cp dotfiles/wezterm/.wezterm.lua ~/.wezterm.lua
 ```
 
