@@ -114,4 +114,6 @@ Custom skills live in `dotfiles/home/.agents/skills/<name>/`. Run `./scripts/ins
 
 Claude and Grok settings and the shared global instructions already use this repository. Codex settings are adopted from `~/.codex/config.toml` on first install, then symlinked back. That file remains Git-ignored because it contains an OAuth secret; provision it locally on a new machine.
 
+Run `python3 scripts/codex-statusline.py` to show the model, remaining context, and remaining five-hour and weekly usage in the Codex footer. Restart Codex after applying it. Codex uses a five-hour usage window rather than a daily counter.
+
 Provider-managed bundled skills, plugin caches and account-synced skills are not portable custom skills. They keep their provider lifecycle and tool dependencies. Credentials, session history and runtime databases remain managed by their applications.
