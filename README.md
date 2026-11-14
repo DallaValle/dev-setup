@@ -92,7 +92,8 @@ The agent drives these checks and configuration steps. You complete browser sign
 - Confirm Git's `user.name` and `user.email`, and configure missing values using your preferred commit identity.
 - Open Docker Desktop and finish its first-run setup. Check `docker info` after its engine starts.
 - Open Tailscale, sign in and approve its macOS network extension.
-- Open Maccy and enable its requested permissions. Install Amphetamine from the Mac App Store and follow [`programs/amphetamine.md`](programs/amphetamine.md) for closed-lid sessions.
+- Open Maccy and enable its requested permissions.
+- Install Amphetamine from the Mac App Store. On Apple silicon laptops, also install Power Protect using the download commands and installer steps in [`programs/amphetamine.md`](programs/amphetamine.md). Start a closed-lid session and verify it survives connecting and disconnecting external power.
 - Sign into VS Code Settings Sync and your browser accounts to restore their settings and extensions.
 - Provision machine-local secrets and any provider-managed plugins separately. Codex's ignored config and account credentials do not travel through Git.
 

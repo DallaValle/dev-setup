@@ -15,6 +15,7 @@ There are no version pins. These programs are deliberately skipped:
 | treehouse on Linux with glibc below 2.34 | every build needs glibc 2.34+ | the distro moves to glibc 2.34+ |
 | Google Chrome not installed on arm64 Linux | Google ships Linux builds for amd64 only | Google ships an arm64 Linux build |
 | Amphetamine installed manually on macOS | distributed through the Mac App Store; no Homebrew cask | a supported direct installer becomes available |
+| Amphetamine Power Protect installed interactively on Apple silicon laptops | official disk-image installer requires administrator authentication; follow `amphetamine.md` | a supported unattended installer becomes available |
 | Grok not installed | setup uses Codex and Claude Code | Grok is explicitly added back to the setup |
 
 ## What gets installed
@@ -35,6 +36,7 @@ There are no version pins. These programs are deliberately skipped:
 | Maccy | macOS | `scripts/packages.sh` (Homebrew cask `maccy`) | none tracked |
 | Docker Desktop | macOS | `scripts/packages.sh` (Homebrew cask `docker-desktop`) | none tracked; open once to complete setup |
 | Amphetamine | macOS | [Mac App Store](https://apps.apple.com/app/amphetamine/id937984704); follow [`amphetamine.md`](amphetamine.md) | none tracked |
+| Amphetamine Power Protect | Apple silicon Mac laptops | official installer during final setup; commands in [`amphetamine.md`](amphetamine.md) | managed by its installer |
 | Git | all | macOS: `scripts/packages.sh` (Homebrew); elsewhere: OS package manager | `dotfiles/windows/.gitconfig` |
 | GitHub CLI (`gh`) | macOS | `scripts/packages.sh` (Homebrew); elsewhere: follow [cli.github.com](https://cli.github.com/) | machine-local login via `gh auth login` |
 | Claude Code | WSL/Linux, macOS | `scripts/packages.sh` (official native installer, latest channel) | `dotfiles/home/.claude/`, subagents in [`../agents/`](../agents/README.md) |
