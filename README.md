@@ -81,7 +81,7 @@ The prompt uses `gh` directly for initial authentication because `gh-axi` is not
 
 `bootstrap.sh` installs missing Homebrew, runs `packages.sh` then `install.sh`, backs up a differing WezTerm config before copying the repo version, and runs `check.sh`. Rerunning it skips installed programs and configs already in place. Run `./scripts/check.sh` separately for a read-only installation check.
 
-On macOS, the installed apps include Brave, Tailscale, WezTerm, Maccy, VS Code, Docker Desktop and KeepingYouAwake. Google Chrome is also installed for browser automation. A new machine gets the latest versions; exceptions are in [`programs/programs.md`](programs/programs.md).
+On macOS, the installed apps include Brave, Tailscale, WezTerm, Maccy, VS Code and Docker Desktop. Google Chrome is also installed for browser automation. A new machine gets the latest versions; exceptions are in [`programs/programs.md`](programs/programs.md).
 
 ### 3. Finish sign-ins and permissions with the agent
 
@@ -92,7 +92,7 @@ The agent drives these checks and configuration steps. You complete browser sign
 - Confirm Git's `user.name` and `user.email`, and configure missing values using your preferred commit identity.
 - Open Docker Desktop and finish its first-run setup. Check `docker info` after its engine starts.
 - Open Tailscale, sign in and approve its macOS network extension.
-- Open Maccy and enable its requested permissions. Open KeepingYouAwake and set launch-at-login preferences if wanted.
+- Open Maccy and enable its requested permissions. Install Amphetamine from the Mac App Store and follow [`programs/amphetamine.md`](programs/amphetamine.md) for closed-lid sessions.
 - Sign into VS Code Settings Sync and your browser accounts to restore their settings and extensions.
 - Provision machine-local secrets and any provider-managed plugins separately. Codex's ignored config and account credentials do not travel through Git.
 

@@ -9,7 +9,6 @@ MACOS_APPS=(
 	"maccy:Maccy"
 	"visual-studio-code:Visual Studio Code"
 	"docker-desktop:Docker"
-	"keepingyouawake:KeepingYouAwake"
 	"google-chrome:Google Chrome"
 )
 

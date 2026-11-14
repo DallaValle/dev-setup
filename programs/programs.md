@@ -14,6 +14,7 @@ There are no version pins. These programs are deliberately skipped:
 |---|---|---|
 | treehouse on Linux with glibc below 2.34 | every build needs glibc 2.34+ | the distro moves to glibc 2.34+ |
 | Google Chrome not installed on arm64 Linux | Google ships Linux builds for amd64 only | Google ships an arm64 Linux build |
+| Amphetamine installed manually on macOS | distributed through the Mac App Store; no Homebrew cask | a supported direct installer becomes available |
 | Grok not installed | setup uses Codex and Claude Code | Grok is explicitly added back to the setup |
 
 ## What gets installed
@@ -33,7 +34,7 @@ There are no version pins. These programs are deliberately skipped:
 | Tailscale | macOS | `scripts/packages.sh` (Homebrew cask `tailscale-app`) | none tracked; sign in after installation |
 | Maccy | macOS | `scripts/packages.sh` (Homebrew cask `maccy`) | none tracked |
 | Docker Desktop | macOS | `scripts/packages.sh` (Homebrew cask `docker-desktop`) | none tracked; open once to complete setup |
-| KeepingYouAwake | macOS | `scripts/packages.sh` (Homebrew cask `keepingyouawake`) | none tracked |
+| Amphetamine | macOS | [Mac App Store](https://apps.apple.com/app/amphetamine/id937984704); follow [`amphetamine.md`](amphetamine.md) | none tracked |
 | Git | all | macOS: `scripts/packages.sh` (Homebrew); elsewhere: OS package manager | `dotfiles/windows/.gitconfig` |
 | GitHub CLI (`gh`) | macOS | `scripts/packages.sh` (Homebrew); elsewhere: follow [cli.github.com](https://cli.github.com/) | machine-local login via `gh auth login` |
 | Claude Code | WSL/Linux, macOS | `scripts/packages.sh` (official native installer, latest channel) | `dotfiles/home/.claude/`, subagents in [`../agents/`](../agents/README.md) |
@@ -45,7 +46,7 @@ There are no version pins. These programs are deliberately skipped:
 
 `packages.sh` also sets zsh as the default login shell (`chsh`), which is what makes WezTerm open zsh: on Windows the WSL domain launches the login shell, and on macOS the native shell is already zsh.
 
-On macOS the shell tools use Homebrew formulae, and Brave, Tailscale, WezTerm, Maccy, VS Code, Docker Desktop, KeepingYouAwake and Chrome use Homebrew casks. Existing apps in `/Applications` or `~/Applications` are kept, including manual installs. herdr, treehouse, Codex and Claude Code use official installers, and the AXI CLIs use npm, see below.
+On macOS the shell tools use Homebrew formulae, and Brave, Tailscale, WezTerm, Maccy, VS Code, Docker Desktop and Chrome use Homebrew casks. Existing apps in `/Applications` or `~/Applications` are kept, including manual installs. herdr, treehouse, Codex and Claude Code use official installers, and the AXI CLIs use npm, see below.
 On WSL/Linux most come from apt, except `fd` (installed as `fdfind`, linked to `fd`) and `lazygit`, which `packages.sh` pulls from its official GitHub release into `~/.local/bin` because apt's version is missing or too old.
 
 [herdr](https://github.com/ogulcancelik/herdr), a terminal workspace manager for AI coding agents, and [treehouse](https://github.com/kunchenguid/treehouse), a pool of reusable git worktrees so several agents can work on one repo without re-cloning, are both single binaries installed from their official installer on both platforms.
