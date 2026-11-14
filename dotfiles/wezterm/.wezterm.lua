@@ -21,6 +21,8 @@ config.hide_tab_bar_if_only_one_tab = false
 config.tab_bar_at_bottom = false
 
 -- Behavior (shared)
+-- Herdr plays its own notification sound; terminal bells would sound twice.
+config.audible_bell = "Disabled"
 config.scrollback_lines = 10000
 config.window_close_confirmation = "NeverPrompt"
 

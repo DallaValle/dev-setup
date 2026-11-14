@@ -20,6 +20,10 @@ Copy-Item "dotfiles\wezterm\.wezterm.lua" "$env:USERPROFILE\.wezterm.lua" -Force
 cp dotfiles/wezterm/.wezterm.lua ~/.wezterm.lua
 ```
 
+Terminal bells are disabled so Herdr notifications only play their own sound.
+
+`./scripts/install.sh` installs the Finder service **New WezTerm Tab at Folder** on macOS. It opens each selected folder in a tab of the active WezTerm window, or starts WezTerm if needed. If it does not appear immediately, log out and back in. In System Settings > Keyboard > Keyboard Shortcuts > Services > Files and Folders, enable it and disable Apple Terminal's **New Terminal at Folder** and **New Terminal Tab at Folder**. Those Apple services cannot be redirected to another terminal.
+
 `Cmd+V` pastes text normally. When the clipboard offers a PNG or TIFF image, it sends `Ctrl+V` so an application with clipboard image support can attach it. This requires the application to run locally and support that shortcut. `Ctrl+Shift+V` remains available for terminal text paste.
 
 The font is JetBrains Mono, bundled with WezTerm, so no separate font installation is needed. It is 14pt on macOS and 11pt on Windows, because macOS renders points smaller.

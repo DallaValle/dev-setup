@@ -18,6 +18,10 @@ DOTFILES=(
 	AGENTS.md
 )
 
+if [ "$(uname -s)" = Darwin ]; then
+	DOTFILES+=("Library/Services/New WezTerm Tab at Folder.workflow")
+fi
+
 DOTFILE_ALIASES=(
 	".claude/CLAUDE.md AGENTS.md"
 	".grok/AGENTS.md AGENTS.md"
