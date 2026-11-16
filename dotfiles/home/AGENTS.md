@@ -18,7 +18,6 @@ These are common instructions for my agents across all scenarios.
 * Apply that same high standard to engineering excellence: lint, test failures, and test flakiness.
 * When you spot such a problem outside your task, fix it if the fix is small and safe; otherwise list it in the recap instead of widening the change.
 * Be synthetic
-* Any task involving images always goes to Codex (`cx`).
 * The coordinator only starts Claude Code or Codex, always in auto mode, with the same flags as the `cc` and `cx` shell aliases.
 * Coordinate parallel work as described in `~/.claude/skills/herdr-team/SKILL.md` instead (Claude loads it as the `herdr-team` skill, other agents read the file).
 
