@@ -25,6 +25,8 @@ These are common instructions for my agents across all scenarios.
 
 * Use `gh-axi` instead of `gh` for GitHub work: issues, PRs, CI runs, releases, labels, secrets.
   Fall back to raw `gh` only for something `gh-axi` does not cover.
+* Put screenshots in a PR with `gh-axi pr edit <n> --attach 'shot.png#Alt text'` (needs gh 2.99+).
+  It appends the images at the end of the body, so move them into the right section (e.g. Visuals) afterwards.
 * Use `chrome-devtools-axi` for anything that needs a real browser: opening pages, clicking through flows, console, network, performance.
   Static pages and plain HTTP fetches do not need a browser, use curl or a fetch tool for those.
 * Both show live state when run with no arguments and a concise reference with `--help`, so start there instead of guessing flags.
