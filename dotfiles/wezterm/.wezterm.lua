@@ -83,6 +83,16 @@ elseif is_mac then
 			)
 		end),
 	})
+	-- macOS editing keys have no WezTerm default; map them to the emacs-style
+	-- controls that zsh, readline and agent TUIs all understand.
+	for _, k in ipairs({
+		{ key = "z", send = "\x1f" }, -- undo (Ctrl+_)
+		{ key = "LeftArrow", send = "\x01" }, -- line start (Ctrl+A)
+		{ key = "RightArrow", send = "\x05" }, -- line end (Ctrl+E)
+		{ key = "Backspace", send = "\x15" }, -- delete line (Ctrl+U)
+	}) do
+		table.insert(config.keys, { key = k.key, mods = "CMD", action = act.SendString(k.send) })
+	end
 	config.default_cwd = wezterm.home_dir
 	config.launch_menu = {
 		{ label = "zsh", args = { "/bin/zsh", "-l" } },
